@@ -23,8 +23,6 @@
           <button @click="undo">undo</button>
           <button @click="redo">redo</button>
           <button @click="clearClicked">clear</button>
-          {{ history.length }}
-          {{ future.length }}
       </div>
   </div>
 
@@ -120,7 +118,7 @@ export default {
       this.mouse.position.y = event.offsetY
       this.mouse.down = (event.buttons === 1)
     },
-    clearClicked: function(event) {
+    clearClicked: function() {
       this.history.push(CLEAR)
       this.future = []
       this.clear()

@@ -7,6 +7,7 @@
 </template>
 
 <script>
+import Vue from 'vue'
 import gql from 'graphql-tag'
 
 const ROOM_QUERY = gql`{
@@ -38,6 +39,11 @@ const ROOM_DELETED_SUBSCRIPTION = gql`subscription roomDeleted {
 
 export default {
   name: 'home',
+  data() {
+    return {
+      rooms: [],
+    }
+  },
   apollo: {
     rooms: {
       query: ROOM_QUERY,
@@ -57,10 +63,10 @@ export default {
             const rooms = previousResult === undefined ? [] : previousResult.rooms
             const index = rooms.findIndex(r => r.uuid == room.uuid, rooms)
             if (index !== -1) {
-              rooms[index] = {...rooms[index], ...room}
-              return {rooms: rooms}
+              const newRoom = Object.assign({}, rooms[index], room)
+              Vue.set(rooms, index, newRoom)
             } else {
-              return {rooms: [...rooms, room]}
+              rooms.push(room)
             }
           },
         },

@@ -51,7 +51,6 @@ export default {
         {
           document: ROOM_INSERTED_SUBSCRIPTION,
           updateQuery: (previousResult, {subscriptionData: {data: {roomInserted: room}}}) => {
-            console.log("INSERTING", room, 'INTO', previousResult)
             const rooms = previousResult === undefined ? [] : previousResult.rooms
             return {rooms: [...rooms, room]}
           },
@@ -59,7 +58,6 @@ export default {
         {
           document: ROOM_UPDATED_SUBSCRIPTION,
           updateQuery: (previousResult, {subscriptionData: {data: {roomUpdated: room}}}) => {
-            console.log("UPDAING", room, 'IN', previousResult)
             const rooms = previousResult === undefined ? [] : previousResult.rooms
             const index = rooms.findIndex(r => r.uuid == room.uuid, rooms)
             if (index !== -1) {
@@ -70,13 +68,14 @@ export default {
             }
           },
         },
-        // {
-        //   document: ROOM_DELETED_SUBSCRIPTION,
-        //   updateQuery: (previousResult, {subscriptionData: {data: {roomInserted: room}}}) => {
-        //     const rooms = previousResult === undefined ? [] : previousResult.rooms
-        //     return {rooms: [...rooms, room]}
-        //   },
-        // },
+        {
+          document: ROOM_DELETED_SUBSCRIPTION,
+          updateQuery: (previousResult, {subscriptionData: {data: {roomDeleted: room}}}) => {
+            const rooms = previousResult === undefined ? [] : previousResult.rooms
+            const index = rooms.findIndex(r => r.uuid == room.uuid, rooms)
+            Vue.delete(rooms, index)
+          },
+        },
       ]
     }
   },

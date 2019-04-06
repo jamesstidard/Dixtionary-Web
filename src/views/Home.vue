@@ -1,5 +1,7 @@
 <template>
   <div class="home">
+    <button @click="goCreateRoom">Create Room</button>
+
     <div v-for="room in rooms" :key="room.uuid">
       {{ room.name }} <font-awesome-icon v-if="room.password" :icon="['fal', 'lock-alt']" />
     </div>
@@ -46,6 +48,11 @@ export default {
     return {
       rooms: [],
     }
+  },
+  methods: {
+    goCreateRoom () {
+      this.$router.push('/create-room')
+    },
   },
   apollo: {
     rooms: {

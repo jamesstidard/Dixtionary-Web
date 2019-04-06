@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import App from './App.vue'
 import { createProvider } from './vue-apollo'
-import store from './store'
 import router from './router'
+import store from './store'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faLockAlt } from '@fortawesome/pro-light-svg-icons'
@@ -18,5 +18,11 @@ new Vue({
   apolloProvider: createProvider(),
   store,
   router,
-  render: h => h(App)
+  render: h => h(App),
+  created() {
+    const token = localStorage.getItem('auth-token')
+    if (token !== null && token !== undefined) {
+      this.$store.commit('TOKEN_INSERTED', token)
+    }
+  },
 }).$mount('#app')

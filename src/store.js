@@ -3,7 +3,8 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
-export default new Vuex.Store({
+
+const store = new Vuex.Store({
   state: {
     token: '',
     rooms: [],
@@ -17,8 +18,7 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    SELECT_ROOM() {
-      
-    }
   }
 })
+
+export default store

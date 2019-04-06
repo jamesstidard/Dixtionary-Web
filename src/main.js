@@ -5,10 +5,10 @@ import router from './router'
 import store from './store'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faLockAlt } from '@fortawesome/pro-light-svg-icons'
+import { faLockAlt, faCrown } from '@fortawesome/pro-light-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-library.add(faLockAlt)
+library.add(faLockAlt, faCrown)
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
@@ -19,10 +19,4 @@ new Vue({
   store,
   router,
   render: h => h(App),
-  created() {
-    const token = localStorage.getItem('auth-token')
-    if (token !== null && token !== undefined) {
-      this.$store.commit('TOKEN_INSERTED', token)
-    }
-  },
 }).$mount('#app')

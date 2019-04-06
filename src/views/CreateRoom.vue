@@ -22,7 +22,7 @@ const INSERT_ROOM = gql`mutation insertRoom($name: String!, $capacity: Int!, $pa
 }`
 
 export default {
-  name: 'home',
+  name: 'create-room',
   data() {
     return {
       room: {
@@ -38,17 +38,19 @@ export default {
         ? this.$router.go(-1)
         : this.$router.push('/')
     },
-    createRoom () {
-      this.$apollo.mutate({
-        mutation: INSERT_ROOM,
-        variables: this.room,
-      }).then((data) => {
-        // Result
-        this.$router.push('/room')
-      }).catch((error) => {
+    async createRoom () {
+      try {
+        const resp = await this.$apollo.mutate({
+          mutation: INSERT_ROOM,
+          variables: this.room,
+        })
+        const uuid =  resp.data.insertRoom.uuid
+        this.$router.push({name: 'room', params: {uuid}})
+      }
+      catch (error) {
         // Error
         console.error(error)
-      })
+      }
     },
   },
 }

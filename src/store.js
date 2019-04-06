@@ -6,7 +6,7 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
   state: {
-    token: '',
+    token: localStorage.getItem('auth-token') || '',
     rooms: [],
   },
   mutations: {

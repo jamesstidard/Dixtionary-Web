@@ -28,9 +28,10 @@ const router = new Router({
       component: CreateRoom,
     },
     {
-      path: '/room',
+      path: '/room/:uuid',
       name: 'room',
       component: Room,
+      props: true,
     },
   ],
 })

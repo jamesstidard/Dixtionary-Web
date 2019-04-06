@@ -12,7 +12,7 @@
 import Vue from 'vue'
 import gql from 'graphql-tag'
 
-const ROOM_QUERY = gql`{
+const ROOM_QUERY = gql`query selectRoom {
   rooms {
     uuid
     name

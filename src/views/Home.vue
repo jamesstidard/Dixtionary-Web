@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <div v-for="room in rooms" :key="room.uuid">
-      {{ room.uuid }} {{ room.name }}
+      {{ room.name }} <font-awesome-icon v-if="room.password" :icon="['fal', 'lock-alt']" />
     </div>
   </div>
 </template>
@@ -14,6 +14,7 @@ const ROOM_QUERY = gql`{
   rooms {
     uuid
     name
+    password
   }
 }`
 
@@ -21,6 +22,7 @@ const ROOM_INSERTED_SUBSCRIPTION = gql`subscription roomInserted {
   roomInserted {
     uuid
     name
+    password
   }
 }`
 
@@ -28,6 +30,7 @@ const ROOM_UPDATED_SUBSCRIPTION = gql`subscription roomUpdated {
   roomUpdated {
     uuid
     name
+    password
   }
 }`
 

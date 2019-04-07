@@ -1,13 +1,13 @@
-<template>
+x<template>
   <div v-if="$apolloData.loading == 0" class="room">
     <h1>Room {{ room.name }}</h1>
     <Canvas></Canvas>
     <h2>Members</h2>
-    <div v-for="member in room.members" :key="member.uuid">
+    <div v-for="member in room.members">
       <font-awesome-icon
         v-if="member.uuid === room.owner.uuid"
         :icon="['fal', 'crown']" />
-      {{ member.name }}
+      {{ member.uuid }}
     </div>
   </div>
 </template>
@@ -16,6 +16,7 @@
 import Vue from 'vue'
 import gql from 'graphql-tag'
 import Canvas from '../components/Canvas.vue'
+import { stateMerge } from "vue-object-merge"
 
 const ROOM_QUERY = gql`query room($uuid: String!) {
   rooms(uuids: [$uuid]) {
@@ -27,29 +28,26 @@ const ROOM_QUERY = gql`query room($uuid: String!) {
     }
     members {
       uuid
-      name
     }
   }
 }`
 
-const ROOM_INSERTED_SUBSCRIPTION = gql`subscription roomInserted {
-  roomInserted {
+const JOIN_ROOM = gql`subscription join($uuid: String!, $token: String!) {
+  joinRoom(uuid: $uuid, token: $token)
+}`
+
+const ROOM_UPDATED_SUBSCRIPTION = gql`subscription roomUpdated($uuid: String!) {
+  roomUpdated(uuids: [$uuid]) {
     uuid
     name
     password
+    owner
+    members
   }
 }`
 
-const ROOM_UPDATED_SUBSCRIPTION = gql`subscription roomUpdated {
-  roomUpdated {
-    uuid
-    name
-    password
-  }
-}`
-
-const ROOM_DELETED_SUBSCRIPTION = gql`subscription roomDeleted {
-  roomDeleted {
+const ROOM_DELETED_SUBSCRIPTION = gql`subscription roomDeleted($uuid: String!) {
+  roomDeleted(uuids: [$uuid]) {
     uuid
   }
 }`
@@ -64,10 +62,29 @@ export default {
   ],
   data() {
     return {
+      joined: false,
       room: {},
     }
   },
   apollo: {
+    $subscribe: {
+      joined: {
+        query: JOIN_ROOM,
+        variables() {
+          return {
+            uuid: this.uuid,
+            token: this.$store.state.token,
+          }
+        },
+        result({data}) {
+          console.log("joined")
+          this.joined = data.joinRoom
+        },
+        skip () {
+          return this.$apolloData.loading !== 0
+        }
+      },
+    },
     room: {
       query: ROOM_QUERY,
       variables() {
@@ -77,38 +94,44 @@ export default {
       },
       deep: true,
       update(data) {
+        console.log("query init", data)
         return data.rooms[0]
-      }
-      // subscribeToMore: [
-      //   {
-      //     document: ROOM_INSERTED_SUBSCRIPTION,
-      //     updateQuery: (previousResult, {subscriptionData: {data: {roomInserted: room}}}) => {
-      //       const rooms = previousResult === undefined ? [] : previousResult.rooms
-      //       return {rooms: [...rooms, room]}
-      //     },
-      //   },
-      //   {
-      //     document: ROOM_UPDATED_SUBSCRIPTION,
-      //     updateQuery: (previousResult, {subscriptionData: {data: {roomUpdated: room}}}) => {
-      //       const rooms = previousResult === undefined ? [] : previousResult.rooms
-      //       const index = rooms.findIndex(r => r.uuid == room.uuid, rooms)
-      //       if (index !== -1) {
-      //         const newRoom = Object.assign({}, rooms[index], room)
-      //         Vue.set(rooms, index, newRoom)
-      //       } else {
-      //         rooms.push(room)
-      //       }
-      //     },
-      //   },
-      //   {
-      //     document: ROOM_DELETED_SUBSCRIPTION,
-      //     updateQuery: (previousResult, {subscriptionData: {data: {roomDeleted: room}}}) => {
-      //       const rooms = previousResult === undefined ? [] : previousResult.rooms
-      //       const index = rooms.findIndex(r => r.uuid == room.uuid, rooms)
-      //       Vue.delete(rooms, index)
-      //     },
-      //   },
-      // ]
+      },
+      subscribeToMore: [
+        {
+          document: ROOM_UPDATED_SUBSCRIPTION,
+          variables() {
+            return {
+              uuid: this.uuid
+            }
+          },
+          updateQuery: (previousResult, {subscriptionData: {data: {roomUpdated: room}}}) => {
+            console.log("query update", previousResult, room)
+            const rooms = previousResult === undefined ? [] : previousResult.rooms
+            const index = rooms.findIndex(r => r.uuid == room.uuid, rooms)
+            room.members = room.members.map(uuid => ({uuid, __typename: "User"}))
+            room.owner = {uuid: room.owner, __typename: "User"}
+            if (index !== -1) {
+              const newRoom = Object.assign({}, rooms[index], room)
+              Vue.set(rooms, index, newRoom)
+            } else {
+              rooms.push(room)
+            }
+            return {rooms}
+          },
+        },
+        {
+          document: ROOM_DELETED_SUBSCRIPTION,
+          variables() {
+            return {
+              uuid: this.uuid
+            }
+          },
+          updateQuery: (previousResult, {subscriptionData: {data: {roomDeleted: room}}}) => {
+            this.$router.push('/')
+          },
+        },
+      ]
     }
   },
 }

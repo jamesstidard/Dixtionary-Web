@@ -37,7 +37,7 @@ export default {
         await onLogin(this.$apolloProvider.defaultClient, token)
         this.$store.commit('TOKEN_INSERTED', token)
         if (this.$route.params.next !== undefined && this.$route.params.next !== null) {
-          this.$router.replace({name: this.$route.params.next})
+          this.$router.replace(this.$route.params.next)
         } else {
           this.$router.replace('/')
         }

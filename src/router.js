@@ -41,7 +41,11 @@ router.beforeEach((to, from, next) => {
     next({
       name: 'sign-in',
       params: {
-        next: to.name,
+        next: {
+          name: to.name,
+          params: to.params,
+          query: to.query
+        },
       },
     })
   } else {

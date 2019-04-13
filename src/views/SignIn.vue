@@ -8,7 +8,6 @@
 <script>
 import gql from 'graphql-tag'
 import { onLogin} from '@/vue-apollo'
-// import { onLogin } from 'src/vue-apollo'
 
 const LOGIN = gql`
 mutation ($name: String!) {

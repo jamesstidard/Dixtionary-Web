@@ -17,7 +17,8 @@ import Vue from 'vue'
 import gql from 'graphql-tag'
 import Canvas from '../components/Canvas.vue'
 
-const ROOM_QUERY = gql`query room($uuid: String!) {
+const ROOM_QUERY = gql`
+query room($uuid: String!) {
   rooms(uuids: [$uuid]) {
     uuid
     name
@@ -31,11 +32,13 @@ const ROOM_QUERY = gql`query room($uuid: String!) {
   }
 }`
 
-const JOIN_ROOM = gql`subscription join($uuid: String!, $token: String!) {
+const JOIN_ROOM = gql`
+subscription join($uuid: String!, $token: String!) {
   joinRoom(uuid: $uuid, token: $token)
 }`
 
-const ROOM_UPDATED_SUBSCRIPTION = gql`subscription roomUpdated($uuid: String!) {
+const ROOM_UPDATED_SUBSCRIPTION = gql`
+subscription roomUpdated($uuid: String!) {
   roomUpdated(uuids: [$uuid]) {
     uuid
     name
@@ -45,7 +48,8 @@ const ROOM_UPDATED_SUBSCRIPTION = gql`subscription roomUpdated($uuid: String!) {
   }
 }`
 
-const ROOM_DELETED_SUBSCRIPTION = gql`subscription roomDeleted($uuid: String!) {
+const ROOM_DELETED_SUBSCRIPTION = gql`
+subscription roomDeleted($uuid: String!) {
   roomDeleted(uuids: [$uuid]) {
     uuid
   }

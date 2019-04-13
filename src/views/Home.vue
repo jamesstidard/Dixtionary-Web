@@ -12,7 +12,8 @@
 import Vue from 'vue'
 import gql from 'graphql-tag'
 
-const ROOM_QUERY = gql`query selectRoom {
+const ROOM_QUERY = gql`
+query selectRoom {
   rooms {
     uuid
     name
@@ -20,7 +21,8 @@ const ROOM_QUERY = gql`query selectRoom {
   }
 }`
 
-const ROOM_INSERTED_SUBSCRIPTION = gql`subscription roomInserted {
+const ROOM_INSERTED_SUBSCRIPTION = gql`
+subscription roomInserted {
   roomInserted {
     uuid
     name
@@ -28,7 +30,8 @@ const ROOM_INSERTED_SUBSCRIPTION = gql`subscription roomInserted {
   }
 }`
 
-const ROOM_UPDATED_SUBSCRIPTION = gql`subscription roomUpdated {
+const ROOM_UPDATED_SUBSCRIPTION = gql`
+subscription roomUpdated {
   roomUpdated {
     uuid
     name
@@ -36,7 +39,8 @@ const ROOM_UPDATED_SUBSCRIPTION = gql`subscription roomUpdated {
   }
 }`
 
-const ROOM_DELETED_SUBSCRIPTION = gql`subscription roomDeleted {
+const ROOM_DELETED_SUBSCRIPTION = gql`
+subscription roomDeleted {
   roomDeleted {
     uuid
   }

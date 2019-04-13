@@ -12,10 +12,10 @@
 
 
 <script>
-import Vue from 'vue'
 import gql from 'graphql-tag'
 
-const INSERT_ROOM = gql`mutation insertRoom($name: String!, $capacity: Int!, $password: String) {
+const INSERT_ROOM = gql`
+mutation insertRoom($name: String!, $capacity: Int!, $password: String) {
   insertRoom(name: $name, capacity: $capacity, password: $password) {
     uuid
   }

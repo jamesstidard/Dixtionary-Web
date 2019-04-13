@@ -9,6 +9,8 @@ x<template>
         :icon="['fal', 'crown']" />
       {{ member.uuid }}
     </div>
+    <h2>Chat</h2>
+    <Chat v-bind:room="uuid"></Chat>
   </div>
 </template>
 
@@ -16,6 +18,7 @@ x<template>
 import Vue from 'vue'
 import gql from 'graphql-tag'
 import Canvas from '../components/Canvas.vue'
+import Chat from '../components/Chat.vue'
 
 const ROOM_QUERY = gql`
 query room($uuid: String!) {
@@ -59,6 +62,7 @@ export default {
   name: 'room',
   components: {
     Canvas,
+    Chat,
   },
   props: [
     'uuid',

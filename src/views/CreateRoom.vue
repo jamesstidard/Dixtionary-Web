@@ -4,7 +4,7 @@
     <input placeholder="name" v-model="room.name">
     <input placeholder="password" v-model="room.password">
     <input placeholder="capacity" type="number" v-model="room.capacity">
-    <button @click="goBack">Cancel</button>
+    <button @click="back">Cancel</button>
     <button @click="createRoom">Create</button>
   </div>
 </template>
@@ -33,7 +33,7 @@ export default {
     }
   },
   methods: {
-    goBack () {
+    back () {
       window.history.length > 1
         ? this.$router.go(-1)
         : this.$router.push('/')

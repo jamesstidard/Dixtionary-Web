@@ -16,7 +16,6 @@ x<template>
 import Vue from 'vue'
 import gql from 'graphql-tag'
 import Canvas from '../components/Canvas.vue'
-import { stateMerge } from "vue-object-merge"
 
 const ROOM_QUERY = gql`query room($uuid: String!) {
   rooms(uuids: [$uuid]) {
@@ -77,7 +76,6 @@ export default {
           }
         },
         result({data}) {
-          console.log("joined")
           this.joined = data.joinRoom
         },
         skip () {
@@ -94,7 +92,6 @@ export default {
       },
       deep: true,
       update(data) {
-        console.log("query init", data)
         return data.rooms[0]
       },
       subscribeToMore: [
@@ -106,7 +103,6 @@ export default {
             }
           },
           updateQuery: (previousResult, {subscriptionData: {data: {roomUpdated: room}}}) => {
-            console.log("query update", previousResult, room)
             const rooms = previousResult === undefined ? [] : previousResult.rooms
             const index = rooms.findIndex(r => r.uuid == room.uuid, rooms)
             room.members = room.members.map(uuid => ({uuid, __typename: "User"}))

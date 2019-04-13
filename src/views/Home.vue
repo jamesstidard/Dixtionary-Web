@@ -2,7 +2,7 @@
   <div class="home">
     <button @click="goCreateRoom">Create Room</button>
 
-    <div v-for="room in rooms" :key="room.uuid">
+    <div v-for="room in rooms" :key="room.uuid" @click="goJoin(room)">
       {{ room.name }} <font-awesome-icon v-if="room.password" :icon="['fal', 'lock-alt']" />
     </div>
   </div>
@@ -52,6 +52,9 @@ export default {
   methods: {
     goCreateRoom () {
       this.$router.push('/create-room')
+    },
+    goJoin(room) {
+      this.$router.push({name: 'room', params: {uuid: room.uuid}})
     },
   },
   apollo: {

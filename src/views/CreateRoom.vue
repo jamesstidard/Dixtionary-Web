@@ -45,7 +45,7 @@ export default {
           variables: this.room,
         })
         const uuid =  resp.data.insertRoom.uuid
-        this.$router.push({name: 'room', params: {uuid}})
+        this.$router.replace({name: 'room', params: {uuid}})
       }
       catch (error) {
         // Error

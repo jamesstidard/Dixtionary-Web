@@ -54,7 +54,10 @@ export default {
           y: 0,
         },
       },
-      stroke: [],
+      stroke: {
+        brush: {},
+        path: [],
+      },
       history: [],
       future: [],
     }
@@ -84,31 +87,30 @@ export default {
     mousedown: function() {
       this.mouse.down = true
       this.future = []
-    },
-    mouseup: function() {
-      this.mouse.down = false
-      if (this.stroke.length > 0) {
-        this.history.push(this.stroke)
-        this.stroke = []
-      }
+      this.stroke.brush = deepCopy(this.brush)
+      this.stroke.path = [deepCopy(this.mouse.position)]
     },
     mousemove: function(event) {
-      const new_position = {
+      const newPosition = {
         x: event.offsetX,
         y: event.offsetY,
       }
 
       if (this.mouse.down === true) {
-        this.stroke.push(deepCopy({
-          from: this.mouse.position,
-          to: new_position,
-          brush: this.brush,
-        }))
+        this.stroke.path.push(newPosition)
         this.draw(this.stroke)
       }
 
-      this.mouse.position.x = new_position.x
-      this.mouse.position.y = new_position.y
+      this.mouse.position.x = newPosition.x
+      this.mouse.position.y = newPosition.y
+    },
+    mouseup: function() {
+      this.mouse.down = false
+      if (this.stroke.path.length > 0) {
+        this.history.push(deepCopy(this.stroke))
+        this.stroke.brush = {}
+        this.stroke.path = []
+      }
     },
     mouseenter: function(event) {
       // if entering presed down, then we should draw
@@ -126,13 +128,13 @@ export default {
     draw: function(stroke) {
       const ctx = this.canvas.ctx
       ctx.beginPath()
-      for (const {from, to, brush} of stroke) {
-        ctx.strokeStyle = brush.strokeStyle
-        ctx.lineWidth = brush.lineWidth
-        ctx.lineCap = brush.lineCap
-        ctx.lineJoin = brush.lineJoin
-        ctx.moveTo(from.x, from.y)
-        ctx.lineTo(to.x, to.y)
+      for (const position of stroke.path) {
+        ctx.strokeStyle = stroke.brush.strokeStyle
+        ctx.lineWidth = stroke.brush.lineWidth
+        ctx.lineCap = stroke.brush.lineCap
+        ctx.lineJoin = stroke.brush.lineJoin
+        ctx.lineTo(position.x, position.y)
+        ctx.moveTo(position.x, position.y)
       }
       ctx.stroke()
     },

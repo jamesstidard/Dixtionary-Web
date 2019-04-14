@@ -42,18 +42,21 @@ export default {
   },
   methods: {
     async send() {
+      const backup = this.draft
+      this.draft = ''
       try {
         const resp = await this.$apollo.mutate({
           mutation: INSERT_MESSAGE,
           variables: {
             room: this.room,
-            body: this.draft,
+            body: backup,
           },
         })
       }
       catch (error) {
         // Error
         console.error(error)
+        this.draft = backup
       }
     },
   },

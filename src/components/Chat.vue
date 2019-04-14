@@ -31,7 +31,7 @@ mutation insertMessage($roomUuid: String!, $body: String!) {
 
 export default {
   name: 'home',
-  props: ['room_uuid'],
+  props: ['roomUuid'],
   data() {
     return {
       messages: [],
@@ -46,7 +46,7 @@ export default {
         const resp = await this.$apollo.mutate({
           mutation: INSERT_MESSAGE,
           variables: {
-            roomUuid: this.room_uuid,
+            roomUuid: this.roomUuid,
             body: backup,
           },
         })
@@ -64,7 +64,7 @@ export default {
         query: MESSAGE_INSERTED_SUBSCRIPTION,
         variables() {
           return {
-            roomUuid: this.room_uuid,
+            roomUuid: this.roomUuid,
           }
         },
         result({data}) {

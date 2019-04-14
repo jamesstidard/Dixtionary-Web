@@ -10,7 +10,7 @@ x<template>
       {{ member.uuid }}
     </div>
     <h2>Chat</h2>
-    <Chat v-bind:room_uuid="uuid"></Chat>
+    <Chat v-bind:room-uuid="uuid"></Chat>
   </div>
 </template>
 

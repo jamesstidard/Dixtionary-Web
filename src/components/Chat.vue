@@ -12,28 +12,26 @@
 import gql from 'graphql-tag'
 
 const MESSAGE_INSERTED_SUBSCRIPTION = gql`
-subscription messageInserted($room: String!) {
-  messageInserted(room: $room) {
+subscription messageInserted($roomUuid: String!) {
+  messageInserted(roomUuid: $roomUuid) {
     uuid
     time
     body
-    author
   }
 }`
 
 const INSERT_MESSAGE = gql`
-mutation insertMessage($room: String!, $body: String!) {
-  insertMessage(room: $room, body: $body) {
+mutation insertMessage($roomUuid: String!, $body: String!) {
+  insertMessage(roomUuid: $roomUuid, body: $body) {
     uuid
     time
     body
-    author
   }
 }`
 
 export default {
   name: 'home',
-  props: ['room'],
+  props: ['room_uuid'],
   data() {
     return {
       messages: [],
@@ -48,7 +46,7 @@ export default {
         const resp = await this.$apollo.mutate({
           mutation: INSERT_MESSAGE,
           variables: {
-            room: this.room,
+            roomUuid: this.room_uuid,
             body: backup,
           },
         })
@@ -66,7 +64,7 @@ export default {
         query: MESSAGE_INSERTED_SUBSCRIPTION,
         variables() {
           return {
-            room: this.room,
+            roomUuid: this.room_uuid,
           }
         },
         result({data}) {

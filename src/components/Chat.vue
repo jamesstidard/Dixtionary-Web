@@ -3,7 +3,7 @@
     <div v-for="msg in messages" :key="msg.uuid">
       {{ msg.body }}
     </div>
-    <input placeholder="chit-chat here" v-model="draft">
+    <input placeholder="chit-chat here" v-model="draft" @keydown.enter="send">
     <button @click="send">Send</button>
   </div>
 </template>

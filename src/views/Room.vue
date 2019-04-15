@@ -1,7 +1,11 @@
 x<template>
   <div v-if="$apolloData.loading == 0" class="room">
     <h1>Room {{ room.name }}</h1>
-    <Canvas></Canvas>
+
+    <Canvas>
+
+    </Canvas>
+
     <h2>Members</h2>
     <div v-for="member in room.members">
       <font-awesome-icon
@@ -9,8 +13,12 @@ x<template>
         :icon="['fal', 'crown']" />
       {{ member.uuid }}
     </div>
+
     <h2>Chat</h2>
-    <Chat v-bind:room-uuid="uuid"></Chat>
+    <Chat
+      v-bind:room-uuid="room.uuid">
+    </Chat>
+
   </div>
 </template>
 

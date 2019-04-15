@@ -11,6 +11,15 @@
 <script>
 import gql from 'graphql-tag'
 
+const MESSAGES_QUERY = gql`
+query messageQuery($roomUuid: String!) {
+  messages(roomUuid: $roomUuid) {
+    uuid
+    time
+    body
+  }
+}`
+
 const MESSAGE_INSERTED_SUBSCRIPTION = gql`
 subscription messageInserted($roomUuid: String!) {
   messageInserted(roomUuid: $roomUuid) {
@@ -24,14 +33,14 @@ const INSERT_MESSAGE = gql`
 mutation insertMessage($roomUuid: String!, $body: String!) {
   insertMessage(roomUuid: $roomUuid, body: $body) {
     uuid
-    time
-    body
   }
 }`
 
 export default {
-  name: 'home',
-  props: ['roomUuid'],
+  name: 'chat',
+  props: [
+    'roomUuid',
+  ],
   data() {
     return {
       messages: [],
@@ -59,18 +68,27 @@ export default {
     },
   },
   apollo: {
-    $subscribe: {
-      messages: {
-        query: MESSAGE_INSERTED_SUBSCRIPTION,
-        variables() {
-          return {
-            roomUuid: this.roomUuid,
-          }
-        },
-        result({data}) {
-          this.messages.push(data.messageInserted)
-        },
+    messages: {
+      query: MESSAGES_QUERY,
+      variables() {
+        return {
+          roomUuid: this.roomUuid,
+        }
       },
+      subscribeToMore: [
+        {
+          document: MESSAGE_INSERTED_SUBSCRIPTION,
+          variables() {
+            return {
+              roomUuid: this.roomUuid,
+            }
+          },
+          updateQuery: (previousResult, {subscriptionData: {data: {messageInserted: message}}}) => {
+            const messages = previousResult === undefined ? [] : previousResult.messages
+            return {messages: [...messages, message]}
+          },
+        },
+      ],
     },
   }
 }

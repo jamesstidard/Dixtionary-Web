@@ -34,6 +34,9 @@ query room($uuid: String!) {
     uuid
     name
     password
+    game {
+      uuid
+    }
     owner {
       uuid
     }
@@ -56,6 +59,7 @@ subscription roomUpdated($uuid: String!) {
     password
     owner
     members
+    game
   }
 }`
 
@@ -123,6 +127,7 @@ export default {
             const index = rooms.findIndex(r => r.uuid == room.uuid, rooms)
             room.members = room.members.map(uuid => ({uuid, __typename: "User"}))
             room.owner = {uuid: room.owner, __typename: "User"}
+            room.game = room.game ? {uuid: room.game, __typename: "Game"} : null
             if (index !== -1) {
               const newRoom = Object.assign({}, rooms[index], room)
               Vue.set(rooms, index, newRoom)

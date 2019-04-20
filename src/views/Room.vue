@@ -1,6 +1,6 @@
 <template>
   <div v-if="$apolloData.loading == 0" class="room">
-    <h1>Room {{ room.name }}</h1>
+    <h1>{{ room.name }}</h1>
 
     <div class="tabletop">
       <div class="main">
@@ -8,17 +8,10 @@
         </Canvas>
       </div>
       <div class="aside">
-        <h2>Members</h2>
-        <div v-for="member in room.members">
-          <font-awesome-icon
-            v-if="member.uuid === room.owner.uuid"
-            :icon="['fal', 'crown']" />
-          {{ member.uuid }}
-        </div>
-        <!-- <h2>Scoreboard</h2>
+        <h2>Scoreboard</h2>
         <Scoreboard
-          v-bind:room-uuid="room.uuid">
-        </Scoreboard> -->
+          v-bind:room="room">
+        </Scoreboard>
 
         <h2>Chat</h2>
         <Chat
@@ -35,6 +28,7 @@ import Vue from 'vue'
 import gql from 'graphql-tag'
 import Canvas from '../components/Canvas.vue'
 import Chat from '../components/Chat.vue'
+import Scoreboard from '../components/Scoreboard.vue'
 
 const ROOM_QUERY = gql`
 query room($uuid: String!) {
@@ -83,6 +77,7 @@ export default {
   components: {
     Canvas,
     Chat,
+    Scoreboard,
   },
   props: [
     'uuid',

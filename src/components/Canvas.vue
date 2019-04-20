@@ -68,7 +68,6 @@ export default {
   },
   mounted: function() {
     window.addEventListener('resize', this.resize)
-    this.resize()
 
     this.$nextTick(function() {
       this.canvas.el = this.$refs.canvas

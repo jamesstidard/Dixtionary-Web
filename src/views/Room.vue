@@ -1,5 +1,5 @@
 <template>
-  <div v-if="$apolloData.loading == 0" class="room">
+  <div v-if="!$apolloData.queries.room.loading" class="room">
     <h1>{{ room.name }}</h1>
 
     <div class="tabletop">
@@ -72,6 +72,28 @@ subscription roomDeleted($uuid: String!) {
   }
 }`
 
+const GAME_QUERY = gql`
+query games($uuid: String!) {
+  games(uuids: [$uuid]) {
+    uuid
+    complete
+    rounds {
+      uuid
+    }
+  }
+}`
+
+
+const GAME_UPDATED_SUBSCRIPTION = gql`
+subscription gameUpdated($uuid: String!) {
+  gameUpdated(uuids: [$uuid]) {
+    uuid
+    complete
+    rounds
+  }
+}`
+
+
 export default {
   name: 'room',
   components: {
@@ -86,6 +108,7 @@ export default {
     return {
       joined: false,
       room: {},
+      game: {},
     }
   },
   apollo: {
@@ -102,7 +125,7 @@ export default {
           this.joined = data.joinRoom
         },
         skip () {
-          return this.$apolloData.loading !== 0
+          return this.$apolloData.queries.room.loading
         }
       },
     },
@@ -152,7 +175,48 @@ export default {
           },
         },
       ]
-    }
+    },
+    game: {
+      query: GAME_QUERY,
+      deep: true,
+      variables() {
+        return {
+          uuid: this.room.game.uuid
+        }
+      },
+      skip() {
+        return !this.room.game
+      },
+      update(data) {
+        return data.games[0]
+      },
+      subscribeToMore: [
+        {
+          document: GAME_UPDATED_SUBSCRIPTION,
+          deep: true,
+          variables() {
+            return {
+              uuid: this.room.game.uuid,
+            }
+          },
+          skip() {
+            return !this.room.game
+          },
+          updateQuery: (previousResult, {subscriptionData: {data: {gameUpdated: game}}}) => {
+            const games = previousResult === undefined ? [] : previousResult.games
+            const index = games.findIndex(r => r.uuid == game.uuid, games)
+            game.rounds = game.rounds.map(uuid => ({uuid, __typename: "Round"}))
+            if (index !== -1) {
+              const newGame = Object.assign({}, games[index], game)
+              Vue.set(games, index, newGame)
+            } else {
+              games.push(game)
+            }
+            return {games}
+          },
+        },
+      ],
+    },
   },
 }
 </script>

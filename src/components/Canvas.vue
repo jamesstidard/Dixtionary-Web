@@ -14,7 +14,7 @@
       </canvas>
       <div
         class="brush"
-        v-bind:style="brushStyle">
+        :style="brushStyle">
       </div>
       <div
         class="toolbelt">
@@ -37,6 +37,10 @@ export default {
   name: 'Canvas',
   data: function() {
     return {
+      size: {
+        width: 0,
+        height: 0,
+      },
       canvas: {
         el: null,
         ctx: null,
@@ -63,10 +67,17 @@ export default {
     }
   },
   mounted: function() {
+    window.addEventListener('resize', this.resize)
+    this.resize()
+
     this.$nextTick(function() {
       this.canvas.el = this.$refs.canvas
       this.canvas.ctx = this.$refs.canvas.getContext("2d")
+      this.resize()
     })
+  },
+  beforeDestory() {
+    window.removeEventListener('resize', this.resize)
   },
   computed: {
     brushStyle: function() {
@@ -82,13 +93,34 @@ export default {
         pointerEvents: "none",
       }
     },
+    relativePosition: function() {
+      return {
+        x: this.mouse.position.x/this.size.width,
+        y: this.mouse.position.y/this.size.height,
+      }
+    }
   },
   methods: {
+    absolutePosition: function(relativePostition) {
+      return {
+        x: relativePostition.x*this.size.width,
+        y: relativePostition.y*this.size.height,
+      }
+    },
+    resize: function() {
+      this.size.width = this.$refs.canvas.clientWidth
+      this.size.height = this.$refs.canvas.clientHeight
+      this.$refs.canvas.width = this.size.width
+      this.$refs.canvas.height = this.size.height
+      this.$nextTick(function() {
+        this.redraw()
+      })
+    },
     mousedown: function() {
       this.mouse.down = true
       this.future = []
       this.stroke.brush = deepCopy(this.brush)
-      this.stroke.path = [deepCopy(this.mouse.position)]
+      this.stroke.path = [deepCopy(this.relativePosition)]
     },
     mousemove: function(event) {
       const newPosition = {
@@ -96,13 +128,13 @@ export default {
         y: event.offsetY,
       }
 
-      if (this.mouse.down === true) {
-        this.stroke.path.push(newPosition)
-        this.draw(this.stroke)
-      }
-
       this.mouse.position.x = newPosition.x
       this.mouse.position.y = newPosition.y
+
+      if (this.mouse.down === true) {
+        this.stroke.path.push(this.relativePosition)
+        this.draw(this.stroke)
+      }
     },
     mouseup: function() {
       this.mouse.down = false
@@ -133,13 +165,14 @@ export default {
         ctx.lineWidth = stroke.brush.lineWidth
         ctx.lineCap = stroke.brush.lineCap
         ctx.lineJoin = stroke.brush.lineJoin
-        ctx.lineTo(position.x, position.y)
-        ctx.moveTo(position.x, position.y)
+        const {x, y} = this.absolutePosition(position)
+        ctx.lineTo(x, y)
+        ctx.moveTo(x, y)
       }
       ctx.stroke()
     },
     clear: function() {
-      this.canvas.ctx.clearRect(0, 0, this.canvas.el.width, this.canvas.el.height)
+      this.canvas.ctx.clearRect(0, 0, this.size.width, this.size.height)
     },
     redraw: function() {
       this.clear()
@@ -179,9 +212,11 @@ canvas:hover {
 }
 
 canvas {
-  position: absolute;
+  /* position: absolute;
   top: 0px;
-  left: 0px;
+  left: 0px; */
+  width: 100%;
+  height: 100%;
   background-color: rgb(206, 206, 206);
 }
 

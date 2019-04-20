@@ -1,6 +1,6 @@
 <template>
   <div class="scoreboard">
-    <div v-for="member in unquieMembers" :key="member.uuid">
+    <div v-for="member in unquieMembers" :key="member.uuid" :class="{me: me.uuid === member.uuid}">
       <font-awesome-icon
         v-if="member.uuid === room.owner.uuid"
         :icon="['fal', 'crown']" />
@@ -36,23 +36,13 @@ export default {
   ],
   data() {
     return {
-      messages: [],
       users: [],
-      draft: '',
-    }
-  },
-  methods: {
-    authorName(message) {
-      const uuid = message.author.uuid
-      const index = this.users.findIndex(u => u.uuid == uuid, this.users)
-      if (index === -1) {
-        return 'Anonymous'
-      } else {
-        return this.users[index].name
-      }
     }
   },
   computed: {
+    me() {
+      return this.$store.getters.me
+    },
     unquieMembers() {
       const uuids = [...new Set(this.room.members.map(m => m.uuid))].sort()
       return this.users.filter(u => uuids.includes(u.uuid))
@@ -64,8 +54,11 @@ export default {
       deep: true,
       variables() {
         return {
-          uuids: this.unquieMembers,
+          uuids: [...new Set(this.room.members.map(m => m.uuid))].sort(),
         }
+      },
+      skip() {
+        return !this.room.members || this.room.members.length === 0
       },
       subscribeToMore: [
         {
@@ -73,7 +66,7 @@ export default {
           deep: true,
           variables() {
             return {
-              uuids: this.unquieMembers,
+              uuids: [...new Set(this.room.members.map(m => m.uuid))].sort(),
             }
           },
           updateQuery: (previousResult, {subscriptionData: {data: {userUpdated: user}}}) => {
@@ -93,3 +86,10 @@ export default {
   }
 }
 </script>
+
+
+<style scoped>
+div.me {
+  font-weight: bold;
+}
+</style>

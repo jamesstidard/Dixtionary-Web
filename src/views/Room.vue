@@ -1,23 +1,31 @@
-x<template>
+<template>
   <div v-if="$apolloData.loading == 0" class="room">
     <h1>Room {{ room.name }}</h1>
 
-    <Canvas>
+    <div class="tabletop">
+      <div class="main">
+        <Canvas>
+        </Canvas>
+      </div>
+      <div class="aside">
+        <h2>Members</h2>
+        <div v-for="member in room.members">
+          <font-awesome-icon
+            v-if="member.uuid === room.owner.uuid"
+            :icon="['fal', 'crown']" />
+          {{ member.uuid }}
+        </div>
+        <!-- <h2>Scoreboard</h2>
+        <Scoreboard
+          v-bind:room-uuid="room.uuid">
+        </Scoreboard> -->
 
-    </Canvas>
-
-    <h2>Members</h2>
-    <div v-for="member in room.members">
-      <font-awesome-icon
-        v-if="member.uuid === room.owner.uuid"
-        :icon="['fal', 'crown']" />
-      {{ member.uuid }}
+        <h2>Chat</h2>
+        <Chat
+          v-bind:room="room">
+        </Chat>
+      </div>
     </div>
-
-    <h2>Chat</h2>
-    <Chat
-      v-bind:room-uuid="room.uuid">
-    </Chat>
 
   </div>
 </template>
@@ -153,3 +161,22 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.tabletop {
+  display: flex;
+  align-items: stretch;
+  flex-wrap: wrap;
+}
+
+.main {
+  flex-grow: 9;
+  min-width: 350px;
+}
+
+.aside {
+  flex-grow: 1;
+  min-width: 350px;
+}
+
+</style>

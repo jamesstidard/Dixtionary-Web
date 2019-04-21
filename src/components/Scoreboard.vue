@@ -4,7 +4,7 @@
       <font-awesome-icon
         v-if="member.uuid === room.owner.uuid"
         :icon="['fal', 'crown']" />
-      {{ member.name }}
+      {{ member.name }} {{ userScore(member) }}
     </div>
   </div>
 </template>
@@ -29,6 +29,26 @@ subscription userUpdated($uuids: [String!]) {
   }
 }`
 
+const SCORES_QUERY = gql`
+query scoreQuery($gameUuid: String!) {
+  scores(gameUuid: $gameUuid) {
+    uuid
+    user {
+      uuid
+    }
+    value
+  }
+}`
+
+const SCORES_UPDATE = gql`
+subscription scoreUpdated($gameUuid: String!) {
+  scoreInserted(gameUuid: $gameUuid) {
+    uuid
+    user
+    value
+  }
+}`
+
 export default {
   name: 'scoreboard',
   props: [
@@ -37,7 +57,14 @@ export default {
   data() {
     return {
       users: [],
+      scores: [],
     }
+  },
+  methods: {
+    userScore: function(user) {
+      const userScores = this.scores.filter(s => s.user.uuid === user.uuid)
+      return userScores.reduce((a, s) => a+s.value, 0)
+    },
   },
   computed: {
     me() {
@@ -58,7 +85,7 @@ export default {
         }
       },
       skip() {
-        return !this.room.members || this.room.members.length === 0
+        return !this.room.members
       },
       subscribeToMore: [
         {
@@ -79,6 +106,44 @@ export default {
               users.push(user)
             }
             return {users}
+          },
+        },
+      ],
+    },
+    scores: {
+      query: SCORES_QUERY,
+      deep: true,
+      variables() {
+        return {
+          gameUuid: this.room.game.uuid,
+        }
+      },
+      skip() {
+        return !this.room || !this.room.game
+      },
+      subscribeToMore: [
+        {
+          document: SCORES_UPDATE,
+          deep: true,
+          variables() {
+            return {
+              gameUuid: this.room.game.uuid,
+            }
+          },
+          skip() {
+            return !this.room || !this.room.game
+          },
+          updateQuery: (previousResult, {subscriptionData: {data: {scoreInserted: score}}}) => {
+            const scores = previousResult === undefined ? [] : previousResult.scores
+            const index = scores.findIndex(u => u.uuid == score.uuid, scores)
+            score.user = {uuid: score.user, __typename: "User"}
+            if (index !== -1) {
+              const newScore = Object.assign({}, scores[index], score)
+              Vue.set(scores, index, newScore)
+            } else {
+              scores.push(score)
+            }
+            return {scores}
           },
         },
       ],

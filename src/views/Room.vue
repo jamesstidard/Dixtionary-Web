@@ -3,7 +3,9 @@
     <h1>{{ room.name }}</h1>
     <h2
       v-if="currentRound && currentTurn">
-      Round: {{ rounds.length }}, Turn: {{ currentRound.turns.length }} ({{ currentTurn.remaining }})
+      Round: {{ rounds.length }},
+      Turn: {{ currentRound.turns.length }},
+      Timeout: {{ currentTurn.remaining }}
     </h2>
 
     <div v-if="currentTurn && currentTurn.artist.uuid === me.uuid">
@@ -159,7 +161,7 @@ query turns($uuids: [String!]) {
 
 
 const UPDATE_TURN = gql`
-mutation updateTurns($uuid: String!, $choice: String!) {
+mutation updateTurns($uuid: String!, $choice: String) {
   updateTurn(uuid: $uuid, choice: $choice) {
     uuid
   }

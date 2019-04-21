@@ -175,6 +175,7 @@ export default {
         this.history.push(deepCopy(this.stroke))
         this.stroke.brush = {}
         this.stroke.path = []
+        this.redraw()
       }
     },
     mouseenter: function(event) {

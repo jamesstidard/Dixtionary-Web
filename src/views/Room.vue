@@ -28,13 +28,17 @@
     <div class="tabletop">
       <div class="main">
         <Canvas
-          v-if="currentTurn && currentTurn.artist.uuid == me.uuid"
+          v-if="currentTurn && currentTurn.choice && currentTurn.artist.uuid == me.uuid"
           v-bind:turn="currentTurn">
         </Canvas>
         <Preview
           v-else-if="currentTurn"
           v-bind:artwork="currentTurn.artwork">
         </Preview>
+        <div
+          v-else-if="game && game.complete">
+          Game Over.
+        </div>
       </div>
       <div class="aside">
         <h2>Scoreboard</h2>

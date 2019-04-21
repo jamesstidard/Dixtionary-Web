@@ -400,7 +400,7 @@ export default {
               uuids: this.rounds.map(r => r.turns.map(t => t.uuid)).flat()
             }
           },
-          updateQuery: (previousResult, {subscriptionData: {data: {roundDeleted: turn}}}) => {
+          updateQuery: (previousResult, {subscriptionData: {data: {turnDeleted: turn}}}) => {
             const turns = previousResult === undefined ? [] : previousResult.turns
             const index = turns.findIndex(r => r.uuid === turn.uuid, turns)
             if (index !== -1) {

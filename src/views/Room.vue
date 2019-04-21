@@ -1,9 +1,26 @@
 <template>
   <div v-if="!$apolloData.queries.room.loading" class="room">
-    <h1>{{ room.name }} <span v-if="rounds.length !== 0">Round: {{ rounds.length }}</span></h1>
+    <h1>{{ room.name }}</h1>
+    <h2
+      v-if="currentRound && currentTurn">
+      Round: {{ rounds.length }}, Turn: {{ currentRound.turns.length }} ({{ currentTurn.remaining }})
+    </h2>
 
     <div v-if="currentTurn && currentTurn.artist.uuid === me.uuid">
-      Your Turn ({{currentTurn.remaining}}): {{currentTurn.choices}}
+      <span v-if="currentTurn.choice === null">
+        Choose:
+        <button
+          v-for="choice in currentTurn.choices"
+          :key="choice"
+          @click="choose(currentTurn.uuid, choice)"
+        >
+          {{choice}}
+        </button>
+      </span>
+      <span v-else>
+        {{ currentTurn.choice }}
+      </span>
+
     </div>
 
     <div class="tabletop">
@@ -141,6 +158,14 @@ query turns($uuids: [String!]) {
 }`
 
 
+const UPDATE_TURN = gql`
+mutation updateTurns($uuid: String!, $choice: String!) {
+  updateTurn(uuid: $uuid, choice: $choice) {
+    uuid
+  }
+}`
+
+
 const TURN_UPDATED_SUBSCRIPTION = gql`
 subscription turnUpdated($token: String!, $uuids: [String!]) {
   turnUpdated(token: $token, uuids: $uuids) {
@@ -177,6 +202,23 @@ export default {
       game: {},
       rounds: [],
       turns: [],
+    }
+  },
+  methods: {
+    async choose(uuid, choice) {
+      try {
+        const resp = await this.$apollo.mutate({
+          mutation: UPDATE_TURN,
+          variables: {
+            uuid,
+            choice
+          },
+        })
+      }
+      catch (error) {
+        // Error
+        console.error(error)
+      }
     }
   },
   computed: {

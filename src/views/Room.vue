@@ -124,6 +124,14 @@ subscription gameUpdated($uuid: String!) {
 }`
 
 
+const GAME_DELETED_SUBSCRIPTION = gql`
+subscription gameDeleted($uuid: String!) {
+  gameDeleted(uuids: [$uuid]) {
+    uuid
+  }
+}`
+
+
 const ROUND_QUERY = gql`
 query rounds($uuids: [String!]) {
   rounds(uuids: $uuids) {
@@ -210,7 +218,7 @@ export default {
     return {
       joined: false,
       room: {},
-      game: {},
+      games: [],
       rounds: [],
       turns: [],
     }
@@ -244,6 +252,17 @@ export default {
       if (this.turns.length  === 0) { return null }
       return this.turns[this.turns.length-1]
     },
+    game: function() {
+      if (
+        this.room &&
+        this.room.game &&
+        this.games.length === 1 &&
+        this.games[0].uuid === this.room.game.uuid) {
+        return this.games[0]
+      } else {
+        return null
+      }
+    }
   },
   apollo: {
     $subscribe: {
@@ -310,7 +329,7 @@ export default {
         },
       ]
     },
-    game: {
+    games: {
       query: GAME_QUERY,
       deep: true,
       variables() {
@@ -319,10 +338,7 @@ export default {
         }
       },
       skip() {
-        return !this.room || !this.room.game || !this.room.game.uuid
-      },
-      update(data) {
-        return data.games[0]
+        return !this.room || !this.room.game
       },
       subscribeToMore: [
         {
@@ -334,10 +350,7 @@ export default {
             }
           },
           skip() {
-            return !this.room || !this.room.game || !this.room.game.uuid
-          },
-          update(data) {
-            return data.games[0]
+            return !this.room || !this.room.game
           },
           updateQuery: (previousResult, {subscriptionData: {data: {gameUpdated: game}}}) => {
             const games = previousResult === undefined ? [] : previousResult.games
@@ -348,6 +361,26 @@ export default {
               Vue.set(games, index, newGame)
             } else {
               games.push(game)
+            }
+            return {games}
+          },
+        },
+        {
+          document: GAME_DELETED_SUBSCRIPTION,
+          deep: true,
+          variables() {
+            return {
+              uuid: this.room.game.uuid,
+            }
+          },
+          skip() {
+            return !this.room || !this.room.game
+          },
+          updateQuery: (previousResult, {subscriptionData: {data: {gameDeleted: game}}}) => {
+            const games = previousResult === undefined ? [] : previousResult.games
+            const index = games.findIndex(r => r.uuid === game.uuid, games)
+            if (index !== -1) {
+              games.splice(index, 1)
             }
             return {games}
           },
@@ -363,7 +396,7 @@ export default {
         }
       },
       skip() {
-        return !this.game.rounds
+        return !this.game
       },
       update(data) {
         return data.rounds
@@ -378,7 +411,7 @@ export default {
             }
           },
           skip() {
-            return !this.game.rounds
+            return !this.game
           },
           updateQuery: (previousResult, {subscriptionData: {data: {roundUpdated: round}}}) => {
             const rounds = previousResult === undefined ? [] : previousResult.rounds
@@ -402,7 +435,7 @@ export default {
             }
           },
           skip() {
-            return !this.game || !this.game.rounds
+            return !this.game
           },
           updateQuery: (previousResult, {subscriptionData: {data: {roundDeleted: round}}}) => {
             const rounds = previousResult === undefined ? [] : previousResult.rounds

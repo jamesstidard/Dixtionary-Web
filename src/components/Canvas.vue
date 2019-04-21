@@ -30,11 +30,25 @@
 
 <script>
 import { deepCopy } from "@/utils/mutability"
+import gql from 'graphql-tag'
+
 const CLEAR = 'clear'
+
+
+const UPDATE_TURN = gql`
+mutation updateTurns($uuid: String!, $artwork: JSONString) {
+  updateTurn(uuid: $uuid, artwork: $artwork) {
+    uuid
+    artwork
+  }
+}`
 
 
 export default {
   name: 'Canvas',
+  props: [
+    'turn',
+  ],
   data: function() {
     return {
       size: {
@@ -77,6 +91,24 @@ export default {
   },
   beforeDestory() {
     window.removeEventListener('resize', this.resize)
+  },
+  watch: {
+    history: async function(newHistory, oldHistory) {
+      try {
+        const resp = await this.$apollo.mutate({
+          mutation: UPDATE_TURN,
+          variables: {
+            uuid: this.turn.uuid,
+            artwork: JSON.stringify(newHistory)
+          },
+        })
+      }
+      catch (error) {
+        this.history = oldHistory
+        this.redraw()
+        this.draw(this.stroke)
+      }
+    }
   },
   computed: {
     brushStyle: function() {

@@ -27,9 +27,14 @@
 
     <div class="tabletop">
       <div class="main">
-
-        <Canvas>
+        <Canvas
+          v-if="currentTurn && currentTurn.artist.uuid == me.uuid"
+          v-bind:turn="currentTurn">
         </Canvas>
+        <Preview
+          v-else-if="currentTurn"
+          v-bind:artwork="currentTurn.artwork">
+        </Preview>
       </div>
       <div class="aside">
         <h2>Scoreboard</h2>
@@ -53,6 +58,7 @@ import gql from 'graphql-tag'
 import Canvas from '../components/Canvas.vue'
 import Chat from '../components/Chat.vue'
 import Scoreboard from '../components/Scoreboard.vue'
+import Preview from '../components/Preview.vue'
 
 const ROOM_QUERY = gql`
 query room($uuid: String!) {
@@ -156,6 +162,7 @@ query turns($uuids: [String!]) {
       uuid
     }
     remaining
+    artwork
   }
 }`
 
@@ -176,6 +183,7 @@ subscription turnUpdated($token: String!, $uuids: [String!]) {
     choice
     artist
     remaining
+    artwork
   }
 }`
 
@@ -193,6 +201,7 @@ export default {
     Canvas,
     Chat,
     Scoreboard,
+    Preview,
   },
   props: [
     'uuid',

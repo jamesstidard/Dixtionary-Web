@@ -41,8 +41,8 @@ query messageQuery($roomUuid: String!) {
 }`
 
 const MESSAGE_INSERTED_SUBSCRIPTION = gql`
-subscription messageInserted($roomUuid: String!) {
-  messageInserted(roomUuid: $roomUuid) {
+subscription messageInserted($roomUuid: String!, $token: String!) {
+  messageInserted(roomUuid: $roomUuid, token: $token) {
     uuid
     time
     author
@@ -117,6 +117,7 @@ export default {
           variables() {
             return {
               roomUuid: this.room.uuid,
+              token: this.$store.state.token,
             }
           },
           updateQuery: (previousResult, {subscriptionData: {data: {messageInserted: message}}}) => {

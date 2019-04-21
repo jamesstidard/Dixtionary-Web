@@ -1,9 +1,14 @@
 <template>
   <div v-if="!$apolloData.queries.room.loading" class="room">
-    <h1>{{ room.name }}</h1>
+    <h1>{{ room.name }} <span v-if="rounds.length !== 0">Round: {{ rounds.length }}</span></h1>
+
+    <div v-if="currentTurn && currentTurn.artist.uuid === me.uuid">
+      Your Turn ({{currentTurn.remaining}}): {{currentTurn.choices}}
+    </div>
 
     <div class="tabletop">
       <div class="main">
+
         <Canvas>
         </Canvas>
       </div>
@@ -94,6 +99,67 @@ subscription gameUpdated($uuid: String!) {
 }`
 
 
+const ROUND_QUERY = gql`
+query rounds($uuids: [String!]) {
+  rounds(uuids: $uuids) {
+    uuid
+    turns {
+      uuid
+    }
+  }
+}`
+
+
+const ROUND_UPDATED_SUBSCRIPTION = gql`
+subscription roundUpdated($uuid: [String!]) {
+  roundUpdated(uuids: $uuid) {
+    uuid
+    turns
+  }
+}`
+
+
+const ROUND_DELETED_SUBSCRIPTION = gql`
+subscription roundDeleted($uuid: [String!]) {
+  roundDeleted(uuids: $uuid) {
+    uuid
+  }
+}`
+
+
+const TURN_QUERY = gql`
+query turns($uuids: [String!]) {
+  turns(uuids: $uuids) {
+    uuid
+    choices
+    choice
+    artist {
+      uuid
+    }
+    remaining
+  }
+}`
+
+
+const TURN_UPDATED_SUBSCRIPTION = gql`
+subscription turnUpdated($token: String!, $uuids: [String!]) {
+  turnUpdated(token: $token, uuids: $uuids) {
+    uuid
+    choices
+    choice
+    artist
+    remaining
+  }
+}`
+
+const TURN_DELETED_SUBSCRIPTION = gql`
+subscription turnDeleted($uuid: [String!]) {
+  turnDeleted(uuids: $uuid) {
+    uuid
+  }
+}`
+
+
 export default {
   name: 'room',
   components: {
@@ -109,7 +175,22 @@ export default {
       joined: false,
       room: {},
       game: {},
+      rounds: [],
+      turns: [],
     }
+  },
+  computed: {
+    me() {
+      return this.$store.getters.me
+    },
+    currentRound: function() {
+      if (this.rounds.length === 0) { return null }
+      return this.rounds[this.rounds.length-1]
+    },
+    currentTurn: function() {
+      if (this.turns.length  === 0) { return null }
+      return this.turns[this.turns.length-1]
+    },
   },
   apollo: {
     $subscribe: {
@@ -150,7 +231,7 @@ export default {
           },
           updateQuery: (previousResult, {subscriptionData: {data: {roomUpdated: room}}}) => {
             const rooms = previousResult === undefined ? [] : previousResult.rooms
-            const index = rooms.findIndex(r => r.uuid == room.uuid, rooms)
+            const index = rooms.findIndex(r => r.uuid === room.uuid, rooms)
             room.members = room.members.map(uuid => ({uuid, __typename: "User"}))
             room.owner = {uuid: room.owner, __typename: "User"}
             room.game = room.game ? {uuid: room.game, __typename: "Game"} : null
@@ -185,7 +266,7 @@ export default {
         }
       },
       skip() {
-        return !this.room.game
+        return !this.room || !this.room.game || !this.room.game.uuid
       },
       update(data) {
         return data.games[0]
@@ -200,11 +281,14 @@ export default {
             }
           },
           skip() {
-            return !this.room.game
+            return !this.room || !this.room.game || !this.room.game.uuid
+          },
+          update(data) {
+            return data.games[0]
           },
           updateQuery: (previousResult, {subscriptionData: {data: {gameUpdated: game}}}) => {
             const games = previousResult === undefined ? [] : previousResult.games
-            const index = games.findIndex(r => r.uuid == game.uuid, games)
+            const index = games.findIndex(r => r.uuid === game.uuid, games)
             game.rounds = game.rounds.map(uuid => ({uuid, __typename: "Round"}))
             if (index !== -1) {
               const newGame = Object.assign({}, games[index], game)
@@ -213,6 +297,116 @@ export default {
               games.push(game)
             }
             return {games}
+          },
+        },
+      ],
+    },
+    rounds: {
+      query: ROUND_QUERY,
+      deep: true,
+      variables() {
+        return {
+          uuids: this.game.rounds.map(r => r.uuid)
+        }
+      },
+      skip() {
+        return !this.game.rounds
+      },
+      update(data) {
+        return data.rounds
+      },
+      subscribeToMore: [
+        {
+          document: ROUND_UPDATED_SUBSCRIPTION,
+          deep: true,
+          variables() {
+            return {
+              uuids: this.game.rounds.map(r => r.uuid)
+            }
+          },
+          skip() {
+            return !this.game.rounds
+          },
+          updateQuery: (previousResult, {subscriptionData: {data: {roundUpdated: round}}}) => {
+            const rounds = previousResult === undefined ? [] : previousResult.rounds
+            const index = rounds.findIndex(r => r.uuid === round.uuid, rounds)
+            round.turns = round.turns.map(uuid => ({uuid, __typename: "Turn"}))
+            if (index !== -1) {
+              const newRound = Object.assign({}, rounds[index], round)
+              Vue.set(rounds, index, newRound)
+            } else {
+              rounds.push(round)
+            }
+            return {rounds}
+          },
+        },
+        {
+          document: ROUND_DELETED_SUBSCRIPTION,
+          deep: true,
+          variables() {
+            return {
+              uuids: this.game.rounds.map(r => r.uuid)
+            }
+          },
+          skip() {
+            return !this.game || !this.game.rounds
+          },
+          updateQuery: (previousResult, {subscriptionData: {data: {roundDeleted: round}}}) => {
+            const rounds = previousResult === undefined ? [] : previousResult.rounds
+            const index = rounds.findIndex(r => r.uuid === round.uuid, rounds)
+            if (index !== -1) {
+              rounds.splice(index, 1)
+            }
+            return {rounds}
+          },
+        },
+      ],
+    },
+    turns: {
+      query: TURN_QUERY,
+      deep: true,
+      variables() {
+        return {
+          uuids: this.rounds.map(r => r.turns.map(t => t.uuid)).flat()
+        }
+      },
+      subscribeToMore: [
+        {
+          document: TURN_UPDATED_SUBSCRIPTION,
+          deep: true,
+          variables() {
+            return {
+              uuids: this.rounds.map(r => r.turns.map(t => t.uuid)).flat(),
+              token: this.$store.state.token,
+            }
+          },
+          updateQuery: (previousResult, {subscriptionData: {data: {turnUpdated: turn}}}) => {
+            const turns = previousResult === undefined ? [] : previousResult.turns
+            const index = turns.findIndex(r => r.uuid === turn.uuid, turns)
+            turn.artist = {uuid: turn.artist, __typename: "User"}
+            if (index !== -1) {
+              const newturn = Object.assign({}, turns[index], turn)
+              Vue.set(turns, index, newturn)
+            } else {
+              turns.push(turn)
+            }
+            return {turns}
+          },
+        },
+        {
+          document: TURN_DELETED_SUBSCRIPTION,
+          variables() {
+            return {
+              uuids: this.rounds.map(r => r.turns.map(t => t.uuid)).flat()
+            }
+          },
+          updateQuery: (previousResult, {subscriptionData: {data: {roundDeleted: turn}}}) => {
+            const turns = previousResult === undefined ? [] : previousResult.turns
+            const index = turns.findIndex(r => r.uuid === turn.uuid, turns)
+            if (index !== -1) {
+              turns.splice(index, 1)
+            }
+            return {turns}
           },
         },
       ],

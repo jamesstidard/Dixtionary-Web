@@ -78,6 +78,7 @@ export default {
       },
       history: [],
       future: [],
+      historyRollback: [],
     }
   },
   mounted: function() {
@@ -93,18 +94,19 @@ export default {
     window.removeEventListener('resize', this.resize)
   },
   watch: {
-    history: async function(newHistory, oldHistory) {
+    history: async function(newHistory) {
       try {
-        const resp = await this.$apollo.mutate({
+        await this.$apollo.mutate({
           mutation: UPDATE_TURN,
           variables: {
             uuid: this.turn.uuid,
             artwork: JSON.stringify(newHistory)
           },
         })
+        this.historyRollback = deepCopy(newHistory)
       }
       catch (error) {
-        this.history = oldHistory
+        this.history = deepCopy(this.historyRollback)
         this.redraw()
         this.draw(this.stroke)
       }

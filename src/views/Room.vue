@@ -1,29 +1,33 @@
 <template>
   <div v-if="!$apolloData.queries.room.loading" class="room">
-    <h1>{{ room.name }}</h1>
-    <h2
-      v-if="currentRound && currentTurn">
-      Round: {{ rounds.length }},
-      Turn: {{ currentRound.turns.length }},
-      Timeout: {{ currentTurn.remaining }}
-    </h2>
-
-    <div v-if="currentTurn && currentTurn.artist.uuid === me.uuid">
-      <span v-if="currentTurn.choice === null">
-        Choose:
-        <button
-          v-for="choice in currentTurn.choices"
-          :key="choice"
-          @click="choose(currentTurn.uuid, choice)"
-        >
-          {{choice}}
-        </button>
-      </span>
-      <span v-else>
-        {{ currentTurn.choice }}
-      </span>
-
+    <div
+      class="header">
+      <h1>{{ room.name }}</h1>
+      <h2
+        v-if="currentRound && currentTurn">
+        Round: {{ rounds.length }},
+        Turn: {{ currentRound.turns.length }},
+        Timeout: {{ currentTurn.remaining }}
+        <span v-if="currentTurn.choice">{{currentTurn.choice}}</span>
+      </h2>
     </div>
+
+    <span
+      class="chooser"
+      v-if="
+        currentTurn &&
+        currentTurn.choice === null &&
+        currentTurn.artist.uuid === me.uuid"
+    >
+      Choose:
+      <button
+        v-for="choice in currentTurn.choices"
+        :key="choice"
+        @click="choose(currentTurn.uuid, choice)"
+      >
+        {{choice}}
+      </button>
+    </span>
 
     <div class="tabletop">
       <div class="main">
@@ -41,15 +45,16 @@
         </div>
       </div>
       <div class="aside">
-        <h2>Scoreboard</h2>
-        <Scoreboard
-          v-bind:room="room">
-        </Scoreboard>
-
-        <h2>Chat</h2>
-        <Chat
-          v-bind:room="room">
-        </Chat>
+        <span class="scoreboard">
+          <Scoreboard
+            v-bind:room="room">
+          </Scoreboard>
+        </span>
+        <span class="chat">
+          <Chat
+            v-bind:room="room">
+          </Chat>
+        </span>
       </div>
     </div>
 
@@ -506,20 +511,48 @@ export default {
 </script>
 
 <style scoped>
-.tabletop {
+.room {
   display: flex;
   align-items: stretch;
-  flex-wrap: wrap;
+  flex-flow: column;
+  height: 100vh;
+}
+
+.header {
+  width: 100%;
+  flex-basis: content;
+}
+
+.chooser {
+  position: absolute;
+}
+
+.tabletop {
+  width: 100%;
+  display: flex;
+  flex-grow: 1;
+  align-items: stretch;
 }
 
 .main {
-  flex-grow: 9;
-  min-width: 350px;
+  flex-grow: 1;
+  /* min-width: 350px; */
 }
 
 .aside {
+  flex-grow: 0;
+  display: flex;
+  align-items: stretch;
+  flex-flow: column;
+  /* min-width: 350px; */
+}
+
+.scoreboard {
   flex-grow: 1;
-  min-width: 350px;
+}
+
+.chat {
+  flex-grow: 1;
 }
 
 </style>

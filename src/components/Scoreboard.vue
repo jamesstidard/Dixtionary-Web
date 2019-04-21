@@ -1,5 +1,6 @@
 <template>
   <div class="scoreboard">
+    <h2>Scoreboard</h2>
     <div v-for="member in unquieMembers" :key="member.uuid" :class="{me: me.uuid === member.uuid}">
       <font-awesome-icon
         v-if="member.uuid === room.owner.uuid"

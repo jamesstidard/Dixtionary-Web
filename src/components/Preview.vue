@@ -102,7 +102,8 @@ export default {
 <style scoped>
 
 .workspace {
-  position: relative;
+  width: 100%;
+  height: 100%;
 }
 
 canvas {
@@ -111,7 +112,10 @@ canvas {
   left: 0px; */
   width: 100%;
   height: 100%;
-  background-color: rgb(206, 206, 206);
+  background-color: rgb(255, 255, 255);
+  border-width: 1px;
+  border-color: black;
+  border-style: dashed;
 }
 
 </style>

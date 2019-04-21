@@ -1,10 +1,16 @@
 <template>
   <div class="chat">
-    <div v-for="msg in messages" :key="msg.uuid">
-      {{ authorName(msg) }}: {{ msg.body }}
+    <h2>Chat</h2>
+
+    <div class="stream">
+      <div v-for="msg in messages" :key="msg.uuid">
+        {{ authorName(msg) }}: {{ msg.body }}
+      </div>
     </div>
-    <input placeholder="chit-chat here" v-model="draft" @keydown.enter="send">
-    <button @click="send">Send</button>
+
+    <div class="input">
+      <input placeholder="chit-chat here" v-model="draft" @keydown.enter="send">
+    </div>
   </div>
 </template>
 
@@ -162,3 +168,20 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.chat {
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  align-items: stretch;
+  flex-flow: column;
+}
+
+.stream {
+  flex-grow: 1;
+  overflow: scroll;
+  overflow-y: scroll;
+}
+</style>

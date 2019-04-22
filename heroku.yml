@@ -3,4 +3,4 @@ build:
     web: Dockerfile
   config:
     VUE_APP_GRAPHQL_HTTP: http://api.dixtionary.shitbeards.com/graphql
-    VUE_APP_GRAPHQL_WS: http://api.dixtionary.shitbeards.com/subsciptions
+    VUE_APP_GRAPHQL_WS: ws://api.dixtionary.shitbeards.com/subsciptions

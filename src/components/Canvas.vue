@@ -145,10 +145,11 @@ export default {
       }
     },
     resize: function() {
-      this.size.width = this.$refs.canvas.clientWidth
-      this.size.height = this.$refs.canvas.clientHeight
-      this.$refs.canvas.width = this.size.width
-      this.$refs.canvas.height = this.size.height
+      console.log(this.canvas.el.clientWidth)
+      this.size.width = this.canvas.el.clientWidth
+      this.size.height = this.canvas.el.clientHeight
+      this.canvas.el.width = this.size.width
+      this.canvas.el.height = this.size.height
       this.$nextTick(function() {
         this.redraw()
       })

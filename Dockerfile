@@ -1,5 +1,7 @@
 FROM node:lts-alpine
 
+RUN npm install -g npm@latest
+
 # install simple http server for serving static content
 RUN npm install -g http-server
 
@@ -8,6 +10,7 @@ WORKDIR /app
 
 # copy both 'package.json' and 'package-lock.json' (if available)
 COPY package*.json ./
+COPY .npmrc ./
 
 # install project dependencies
 RUN npm install

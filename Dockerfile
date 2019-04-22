@@ -1,5 +1,6 @@
 FROM node:lts-alpine
 
+RUN npm config set unsafe-perm true
 RUN npm install -g npm@latest
 
 # install simple http server for serving static content

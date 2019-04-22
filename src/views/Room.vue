@@ -525,6 +525,19 @@ export default {
 
 .chooser {
   position: absolute;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: stretch;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+.chooser button {
+  font-size: 16px;
+  min-width: 100px;
 }
 
 .tabletop {
@@ -536,7 +549,7 @@ export default {
 
 .main {
   flex-grow: 1;
-  /* min-width: 350px; */
+  padding: 8px;
 }
 
 .aside {

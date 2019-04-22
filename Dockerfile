@@ -20,9 +20,9 @@ RUN npm install
 COPY . .
 
 # build app for production with minification
-RUN npm run build
-
 ARG VUE_APP_GRAPHQL_HTTP
 ARG VUE_APP_GRAPHQL_WS
+RUN npm run build
+
 EXPOSE 8080
 CMD [ "http-server", "dist" ]

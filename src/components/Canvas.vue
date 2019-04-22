@@ -145,7 +145,6 @@ export default {
       }
     },
     resize: function() {
-      console.log(this.canvas.el.clientWidth)
       this.size.width = this.canvas.el.clientWidth
       this.size.height = this.canvas.el.clientHeight
       this.canvas.el.width = this.size.width

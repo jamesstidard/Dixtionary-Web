@@ -1,9 +1,3 @@
-setup:
-  addons:
-    - plan: heroku-redis
-      as: REDIS
 build:
   docker:
     web: Dockerfile
-run:
-  web: python -m dixtionary

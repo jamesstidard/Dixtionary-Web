@@ -27,3 +27,11 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+
+### Heroku Setup
+```sh
+$ heroku create com-shitbeards-dixtionary --region eu --manifest
+$ heroku domains:add dixtionary.shitbeards.com
+$ git push heroku master 
+```

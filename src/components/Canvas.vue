@@ -71,6 +71,10 @@ export default {
           x: 0,
           y: 0,
         },
+        global: {
+          x: 0,
+          y: 0,
+        },
       },
       stroke: {
         brush: {},
@@ -117,8 +121,8 @@ export default {
       const width = this.brush.lineWidth
       return {
         position: "absolute",
-        left: `${this.mouse.position.x - (width/2)}px`,
-        top: `${this.mouse.position.y - (width/2)}px`,
+        left: `${this.mouse.global.x - (width/2)}px`,
+        top: `${this.mouse.global.y - (width/2)}px`,
         borderRadius: `${width/2}px`,
         width: `${width}px`,
         height: `${width}px`,
@@ -163,6 +167,8 @@ export default {
 
       this.mouse.position.x = newPosition.x
       this.mouse.position.y = newPosition.y
+      this.mouse.global.x = event.pageX
+      this.mouse.global.y = event.pageY
 
       if (this.mouse.down === true) {
         this.stroke.path.push(this.relativePosition)
@@ -184,6 +190,8 @@ export default {
       // draw from last exit location
       this.mouse.position.x = event.offsetX
       this.mouse.position.y = event.offsetY
+      this.mouse.global.x = event.pageX
+      this.mouse.global.y = event.pageY
       this.mouse.down = (event.buttons === 1)
     },
     clearClicked: function() {

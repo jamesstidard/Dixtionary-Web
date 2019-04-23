@@ -1,6 +1,6 @@
 <template>
   <div class="chat">
-    <h2>Chat</h2>
+    <h2 class="heading">Chat</h2>
 
     <div class="stream">
       <div v-for="msg in messages" :key="msg.uuid">
@@ -177,11 +177,20 @@ export default {
   display: flex;
   align-items: stretch;
   flex-flow: column;
+  /* overflow: scroll; */
+}
+
+.heading {
+  flex-grow: 0;
 }
 
 .stream {
   flex-grow: 1;
-  overflow: scroll;
-  overflow-y: scroll;
+  /* overflow: scroll;
+  overflow-y: scroll; */
+}
+
+.input {
+  flex-grow: 0;
 }
 </style>

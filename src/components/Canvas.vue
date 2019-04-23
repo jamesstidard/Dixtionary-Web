@@ -1,5 +1,34 @@
-// http://perfectionkills.com/exploring-canvas-drawing-techniques/
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
 
+.workspace {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: stretch;
+  flex-flow: column;
+}
+
+canvas:hover {
+  cursor: none;
+}
+
+canvas {
+  background-color: rgb(255, 255, 255);
+  border-width: 1px;
+  border-color: black;
+  border-style: dashed;
+  flex-grow: 1;
+}
+
+/* hide brush on leaving canvas */
+canvas:not(:hover) + div.brush {
+  display: none;
+}
+
+</style>
+
+// http://perfectionkills.com/exploring-canvas-drawing-techniques/
 <template>
   <div
     class="workspace"
@@ -241,35 +270,3 @@ export default {
   }
 }
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-
-.workspace {
-  width: 100%;
-  height: 100%;
-}
-
-canvas:hover {
-  cursor: none;
-}
-
-canvas {
-  /* position: absolute;
-  top: 0px;
-  left: 0px; */
-  width: 100%;
-  height: 100%;
-  background-color: rgb(255, 255, 255);
-  border-width: 1px;
-  border-color: black;
-  border-style: dashed;
-
-}
-
-/* hide brush on leaving canvas */
-canvas:not(:hover) + div.brush {
-  display: none;
-}
-
-</style>

@@ -561,11 +561,13 @@ export default {
 }
 
 .scoreboard {
-  flex-grow: 1;
+  flex: 1;
+  height: 0;
 }
 
 .chat {
-  flex-grow: 1;
+  flex: 1;
+  height: 0;
 }
 
 </style>

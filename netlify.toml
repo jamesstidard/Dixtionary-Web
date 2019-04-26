@@ -16,8 +16,8 @@
   command = "npm run build"
 
 [context.production.environment]
-  VUE_APP_GRAPHQL_HTTP = "https://dixtionary.shitbeards.com/api/graphql"
-  VUE_APP_GRAPHQL_WS = "wss://dixtionary.shitbeards.com/api/subscriptions"
+  VUE_APP_GRAPHQL_HTTP = "https://com-shitbeards-dixtionary-api.herokuapp.com/graphql"
+  VUE_APP_GRAPHQL_WS = "wss://com-shitbeards-dixtionary-api.herokuapp.com/subscriptions"
 
 
 [[redirects]]

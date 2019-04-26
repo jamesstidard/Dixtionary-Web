@@ -19,6 +19,11 @@
   VUE_APP_GRAPHQL_HTTP = "https://api.accounts.shitbeards.com.herokudns.com/graphql"
   VUE_APP_GRAPHQL_WS = "wss://api.accounts.shitbeards.com.herokudns.com/subscriptions"
 
+[[redirect]]
+  from = "/api/*"
+  to = "https://com-shitbeards-dixtionary-api.herokuapp.com/:splat"
+  status = 200
+
 # The following redirect is intended for use with most SPAs that handle
 # routing internally.
 [[redirects]]

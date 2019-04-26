@@ -1,11 +1,60 @@
+<style scoped>
+.scoreboard {
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.line {
+  text-align: left;
+  display: flex;
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+.name {
+  flex-grow: 1;
+  padding-left: 8px;
+  padding-right: 8px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.score {
+  padding-right: 4px;
+}
+
+div.me {
+  font-weight: bold;
+}
+</style>
+
+
 <template>
   <div class="scoreboard">
     <h2>Scoreboard</h2>
-    <div v-for="member in unquieMembers" :key="member.uuid" :class="{me: me.uuid === member.uuid}">
-      <font-awesome-icon
-        v-if="member.uuid === room.owner.uuid"
-        :icon="['fal', 'crown']" />
-      {{ member.name }} {{ userScore(member) }}
+    <div
+      v-for="member in unquieMembers"
+      :key="member.uuid"
+      class="line"
+      :class="{me: me.uuid === member.uuid}">
+
+      <div class="token">
+        <font-awesome-icon
+          v-if="member.uuid === room.owner.uuid"
+          :icon="['fal', 'user-crown']" />
+        <font-awesome-icon
+          v-else
+          :icon="['fal', 'user']" />
+      </div>
+
+      <div class="name">
+        {{ member.name }}
+      </div>
+
+      <div class="score">
+        {{ userScore(member) }}
+      </div>
+
     </div>
   </div>
 </template>
@@ -152,10 +201,3 @@ export default {
   }
 }
 </script>
-
-
-<style scoped>
-div.me {
-  font-weight: bold;
-}
-</style>

@@ -37,7 +37,7 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-  if (!['home', 'sign-in'].includes(to.name) && !store.state.token) {
+  if (!['home', 'sign-in', 'api'].includes(to.name) && !store.state.token) {
     next({
       name: 'sign-in',
       params: {

@@ -1,3 +1,30 @@
+<style scoped>
+.chat {
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  align-items: stretch;
+  flex-flow: column;
+  /* overflow: scroll; */
+}
+
+.heading {
+  flex-grow: 0;
+}
+
+.stream {
+  flex-grow: 1;
+  /* overflow: scroll;
+  overflow-y: scroll; */
+}
+
+.input {
+  flex-grow: 0;
+}
+</style>
+
+
 <template>
   <div class="chat">
     <h2 class="heading">Chat</h2>
@@ -168,29 +195,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-.chat {
-  width: 100%;
-  height: 100%;
-
-  display: flex;
-  align-items: stretch;
-  flex-flow: column;
-  /* overflow: scroll; */
-}
-
-.heading {
-  flex-grow: 0;
-}
-
-.stream {
-  flex-grow: 1;
-  /* overflow: scroll;
-  overflow-y: scroll; */
-}
-
-.input {
-  flex-grow: 0;
-}
-</style>

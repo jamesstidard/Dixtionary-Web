@@ -36,7 +36,9 @@ div.me {
       v-for="member in unquieMembers"
       :key="member.uuid"
       class="line"
-      :class="{me: me.uuid === member.uuid}">
+      :class="{
+        me: me.uuid === member.uuid
+      }">
 
       <div class="token">
         <font-awesome-icon

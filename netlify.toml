@@ -19,7 +19,15 @@
   VUE_APP_GRAPHQL_HTTP = "https://api.accounts.shitbeards.com.herokudns.com/graphql"
   VUE_APP_GRAPHQL_WS = "wss://api.accounts.shitbeards.com.herokudns.com/subscriptions"
 
-[[redirect]]
+
+[[redirects]]
+  from = "https://dixtionary.netlify.com/*"
+  to = "https://dixtionary.shitbeards.com/:splat"
+  status = 301
+  force = true
+
+
+[[redirects]]
   from = "/api/*"
   to = "https://com-shitbeards-dixtionary-api.herokuapp.com/:splat"
   status = 200

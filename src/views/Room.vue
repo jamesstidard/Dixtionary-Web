@@ -298,6 +298,9 @@ export default {
           uuid: this.uuid
         }
       },
+      error(error) {
+        this.$router.push('/')
+      },
       deep: true,
       update(data) {
         return data.rooms[0]

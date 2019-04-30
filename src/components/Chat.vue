@@ -1,5 +1,7 @@
 <style scoped>
 .container {
+  padding-left: 8px;
+  padding-right: 8px;
 
   height: 100%;
   width: 100%;
@@ -9,7 +11,6 @@
 }
 
 .section {
-  margin: 10px;
   flex-grow: 1;
 
   display: flex;
@@ -19,11 +20,9 @@
   min-height: 0;
 }
 
-.content {
-  margin: 10px;
-}
-
 .scrollable-content {
+  text-align: left;
+
   flex-grow: 1;
 
   overflow: auto;

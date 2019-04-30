@@ -117,7 +117,7 @@ export default {
   },
   mounted: function() {
     this.$nextTick(function() {
-      this.$refs.stream.el.scrollTop = this.$refs.stream.el.scrollHeight;
+      this.$refs.stream.scrollTop = this.$refs.stream.scrollHeight;
     })
   },
   methods: {
@@ -160,8 +160,10 @@ export default {
   },
   watch: {
     messages: function() {
-      this.$refs.stream.el.scrollTop = this.$refs.stream.el.scrollHeight;
-    }
+      this.$nextTick(function() {
+        this.$refs.stream.scrollTop = this.$refs.stream.scrollHeight;
+      })
+    },
   },
   apollo: {
     messages: {

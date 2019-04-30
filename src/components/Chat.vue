@@ -1,12 +1,13 @@
 <style scoped>
-.chat {
+.box {
+  /* https://codepen.io/stephenbunch/pen/KWBNVo?editors=1100 */
   width: 100%;
   height: 100%;
 
   display: flex;
-  align-items: stretch;
   flex-flow: column;
-  /* overflow: scroll; */
+
+  min-height: 0;
 }
 
 .heading {
@@ -15,8 +16,9 @@
 
 .stream {
   flex-grow: 1;
-  /* overflow: scroll;
-  overflow-y: scroll; */
+  overflow: auto;
+
+  min-height: 0;
 }
 
 .input {
@@ -27,17 +29,19 @@
 
 <template>
   <div class="chat">
-    <h2 class="heading">Chat</h2>
+    <span class="box">
+      <h2 class="heading">Chat</h2>
 
-    <div class="stream">
-      <div v-for="msg in messages" :key="msg.uuid">
-        {{ authorName(msg) }}: {{ msg.body }}
+      <div class="stream">
+        <div v-for="msg in messages" :key="msg.uuid">
+          {{ authorName(msg) }}: {{ msg.body }}
+        </div>
       </div>
-    </div>
 
-    <div class="input">
-      <input placeholder="chit-chat here" v-model="draft" @keydown.enter="send">
-    </div>
+      <div class="input">
+        <input placeholder="chit-chat here" v-model="draft" @keydown.enter="send">
+      </div>
+    </span>
   </div>
 </template>
 

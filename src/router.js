@@ -5,6 +5,7 @@ import SignIn from './views/SignIn.vue'
 import CreateRoom from './views/CreateRoom.vue'
 import Room from './views/Room.vue'
 import store from './store'
+import Chat from './components/Chat.vue'
 
 Vue.use(Router)
 
@@ -12,6 +13,11 @@ const router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
+    {
+      path: '/test',
+      name: 'test',
+      component: Chat,
+    },
     {
       path: '/',
       name: 'home',

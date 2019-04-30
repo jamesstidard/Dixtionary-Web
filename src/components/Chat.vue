@@ -1,143 +1,157 @@
 <style scoped>
-.box {
-  /* https://codepen.io/stephenbunch/pen/KWBNVo?editors=1100 */
-  width: 100%;
+.container {
+
   height: 100%;
+  width: 100%;
 
   display: flex;
-  flex-flow: column;
+  flex-direction: column;
+}
 
+.section {
+  margin: 10px;
+  flex-grow: 1;
+
+  display: flex;
+  flex-direction: column;
+
+  /* for Firefox */
   min-height: 0;
 }
 
-.heading {
-  flex-grow: 0;
+.content {
+  margin: 10px;
 }
 
-.stream {
+.scrollable-content {
   flex-grow: 1;
+
   overflow: auto;
 
+  /* for Firefox */
   min-height: 0;
-}
-
-.input {
-  flex-grow: 0;
 }
 </style>
 
 
 <template>
-  <div class="chat">
-    <span class="box">
-      <h2 class="heading">Chat</h2>
+  <div class="container">
+    <div class="section">
+      <div class="content">
+        <h2>Chat</h2>
+      </div>
 
-      <div class="stream">
-        <div v-for="msg in messages" :key="msg.uuid">
-          {{ authorName(msg) }}: {{ msg.body }}
-        </div>
+      <div class="scrollable-content content">
+        <div v-for="msg in messages" :key="msg.uuid">{{ authorName(msg) }}: {{ msg.body }}</div>
       </div>
 
       <div class="input">
         <input placeholder="chit-chat here" v-model="draft" @keydown.enter="send">
       </div>
-    </span>
+    </div>
   </div>
 </template>
 
 <script>
-import Vue from 'vue'
-import gql from 'graphql-tag'
+import Vue from "vue";
+import gql from "graphql-tag";
 
 const USERS_QUERY = gql`
-query userQuery($uuids: [String!]) {
-  users(uuids: $uuids) {
-    uuid
-    name
+  query userQuery($uuids: [String!]) {
+    users(uuids: $uuids) {
+      uuid
+      name
+    }
   }
-}`
+`;
 
 const USERS_UPDATE = gql`
-subscription userUpdated($uuids: [String!]) {
-  userUpdated(uuids: $uuids) {
-    uuid
-    name
+  subscription userUpdated($uuids: [String!]) {
+    userUpdated(uuids: $uuids) {
+      uuid
+      name
+    }
   }
-}`
+`;
 
 const MESSAGES_QUERY = gql`
-query messageQuery($roomUuid: String!) {
-  messages(roomUuid: $roomUuid) {
-    uuid
-    time
-    author {
+  query messageQuery($roomUuid: String!) {
+    messages(roomUuid: $roomUuid) {
       uuid
+      time
+      author {
+        uuid
+      }
+      body
     }
-    body
   }
-}`
+`;
 
 const MESSAGE_INSERTED_SUBSCRIPTION = gql`
-subscription messageInserted($roomUuid: String!, $token: String!) {
-  messageInserted(roomUuid: $roomUuid, token: $token) {
-    uuid
-    time
-    author
-    body
+  subscription messageInserted($roomUuid: String!, $token: String!) {
+    messageInserted(roomUuid: $roomUuid, token: $token) {
+      uuid
+      time
+      author
+      body
+    }
   }
-}`
+`;
 
 const INSERT_MESSAGE = gql`
-mutation insertMessage($roomUuid: String!, $body: String!) {
-  insertMessage(roomUuid: $roomUuid, body: $body) {
-    uuid
+  mutation insertMessage($roomUuid: String!, $body: String!) {
+    insertMessage(roomUuid: $roomUuid, body: $body) {
+      uuid
+    }
   }
-}`
+`;
 
 export default {
-  name: 'chat',
-  props: [
-    'room',
-  ],
+  name: "chat",
+  props: ["room"],
   data() {
     return {
       messages: [],
       users: [],
-      draft: '',
-    }
+      draft: ""
+    };
   },
   methods: {
     async send() {
-      const backup = this.draft
-      this.draft = ''
+      const backup = this.draft;
+      this.draft = "";
       try {
         const resp = await this.$apollo.mutate({
           mutation: INSERT_MESSAGE,
           variables: {
             roomUuid: this.room.uuid,
-            body: backup,
-          },
-        })
-      }
-      catch (error) {
+            body: backup
+          }
+        });
+      } catch (error) {
         // Error
-        console.error(error)
-        this.draft = backup
+        console.error(error);
+        this.draft = backup;
       }
     },
     authorName(message) {
-      const uuid = message.author.uuid
-      const index = this.users.findIndex(u => u.uuid == uuid, this.users)
+      const uuid = message.author.uuid;
+      const index = this.users.findIndex(u => u.uuid == uuid, this.users);
       if (index === -1) {
-        return 'Anonymous'
+        return "Anonymous";
       } else {
-        return this.users[index].name
+        return this.users[index].name;
       }
     }
   },
   computed: {
     unquieMembers() {
-      return [...new Set([...this.messages.map(m => m.author.uuid), ...this.room.members.map(m => m.uuid)])].sort()
+      return [
+        ...new Set([
+          ...this.messages.map(m => m.author.uuid),
+          ...this.room.members.map(m => m.uuid)
+        ])
+      ].sort();
     }
   },
   apollo: {
@@ -145,8 +159,8 @@ export default {
       query: MESSAGES_QUERY,
       variables() {
         return {
-          roomUuid: this.room.uuid,
-        }
+          roomUuid: this.room.uuid
+        };
       },
       subscribeToMore: [
         {
@@ -154,24 +168,32 @@ export default {
           variables() {
             return {
               roomUuid: this.room.uuid,
-              token: this.$store.state.token,
+              token: this.$store.state.token
+            };
+          },
+          updateQuery: (
+            previousResult,
+            {
+              subscriptionData: {
+                data: { messageInserted: message }
+              }
             }
-          },
-          updateQuery: (previousResult, {subscriptionData: {data: {messageInserted: message}}}) => {
-            const messages = previousResult === undefined ? [] : previousResult.messages
-            message.author = {uuid: message.author, __typename: "User"}
-            return {messages: [...messages, message]}
-          },
-        },
-      ],
+          ) => {
+            const messages =
+              previousResult === undefined ? [] : previousResult.messages;
+            message.author = { uuid: message.author, __typename: "User" };
+            return { messages: [...messages, message] };
+          }
+        }
+      ]
     },
     users: {
       query: USERS_QUERY,
       deep: true,
       variables() {
         return {
-          uuids: this.unquieMembers,
-        }
+          uuids: this.unquieMembers
+        };
       },
       subscribeToMore: [
         {
@@ -179,23 +201,31 @@ export default {
           deep: true,
           variables() {
             return {
-              uuids: this.unquieMembers,
-            }
+              uuids: this.unquieMembers
+            };
           },
-          updateQuery: (previousResult, {subscriptionData: {data: {userUpdated: user}}}) => {
-            const users = previousResult === undefined ? [] : previousResult.users
-            const index = users.findIndex(u => u.uuid == user.uuid, users)
+          updateQuery: (
+            previousResult,
+            {
+              subscriptionData: {
+                data: { userUpdated: user }
+              }
+            }
+          ) => {
+            const users =
+              previousResult === undefined ? [] : previousResult.users;
+            const index = users.findIndex(u => u.uuid == user.uuid, users);
             if (index !== -1) {
-              const newUser = Object.assign({}, users[index], user)
-              Vue.set(users, index, newUser)
+              const newUser = Object.assign({}, users[index], user);
+              Vue.set(users, index, newUser);
             } else {
-              users.push(user)
+              users.push(user);
             }
-            return {users}
-          },
-        },
-      ],
-    },
+            return { users };
+          }
+        }
+      ]
+    }
   }
-}
+};
 </script>

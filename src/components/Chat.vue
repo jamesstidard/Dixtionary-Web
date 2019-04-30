@@ -40,7 +40,7 @@
         <h2>Chat</h2>
       </div>
 
-      <div class="scrollable-content content">
+      <div ref="stream" class="scrollable-content content">
         <div v-for="msg in messages" :key="msg.uuid">{{ authorName(msg) }}: {{ msg.body }}</div>
       </div>
 
@@ -115,6 +115,11 @@ export default {
       draft: ""
     };
   },
+  mounted: function() {
+    this.$nextTick(function() {
+      this.$refs.stream.el.scrollTop = this.$refs.stream.el.scrollHeight;
+    })
+  },
   methods: {
     async send() {
       const backup = this.draft;
@@ -151,6 +156,11 @@ export default {
           ...this.room.members.map(m => m.uuid)
         ])
       ].sort();
+    }
+  },
+  watch: {
+    messages: function() {
+      this.$refs.stream.el.scrollTop = this.$refs.stream.el.scrollHeight;
     }
   },
   apollo: {

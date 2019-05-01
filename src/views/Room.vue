@@ -74,7 +74,8 @@ query room($uuid: String!) {
   rooms(uuids: [$uuid]) {
     uuid
     name
-    password
+    inviteOnly
+    inviteCode
     game {
       uuid
     }
@@ -88,8 +89,8 @@ query room($uuid: String!) {
 }`
 
 const JOIN_ROOM = gql`
-subscription join($uuid: String!, $token: String!) {
-  joinRoom(uuid: $uuid, token: $token)
+subscription join($uuid: String!, $token: String!, $inviteCode: String) {
+  joinRoom(uuid: $uuid, token: $token, inviteCode: $inviteCode)
 }`
 
 const ROOM_UPDATED_SUBSCRIPTION = gql`
@@ -97,7 +98,8 @@ subscription roomUpdated($uuid: String!) {
   roomUpdated(uuids: [$uuid]) {
     uuid
     name
-    password
+    inviteOnly
+    inviteCode
     owner
     members
     game
@@ -281,6 +283,7 @@ export default {
           return {
             uuid: this.uuid,
             token: this.$store.state.token,
+            inviteCode: this.$route.query.inviteCode,
           }
         },
         result({data}) {

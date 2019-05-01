@@ -1,11 +1,45 @@
+<style scoped>
+
+.create-room {
+  display: flex;
+  align-items: stretch;
+  flex-flow: column;
+  height: 100vh
+}
+
+h1 {
+  padding-top: 32px;
+  padding-bottom: 32px;
+}
+
+.actions {
+  padding-top: 32px;
+}
+
+</style>
+
+
 <template>
   <div class="create-room">
     <h1>Create Room</h1>
-    <input placeholder="name" v-model="room.name">
-    <input placeholder="password" v-model="room.password">
-    <input placeholder="capacity" type="number" v-model="room.capacity">
-    <button @click="back">Cancel</button>
-    <button @click="createRoom">Create</button>
+
+    <span class="forum">
+      <label>Room Name: </label>
+      <input placeholder="name" v-model="room.name">
+    </span>
+    <span>
+      <label>Capacity: </label>
+      <input placeholder="capacity" type="number" v-model="room.capacity">
+    </span>
+    <span>
+      <label>Invite Only: </label>
+      <input type="checkbox" v-model="room.inviteOnly">
+    </span>
+
+    <span class="actions">
+      <button @click="back">Cancel</button>
+      <button @click="createRoom">Create</button>
+    </span>
   </div>
 </template>
 
@@ -15,9 +49,10 @@
 import gql from 'graphql-tag'
 
 const INSERT_ROOM = gql`
-mutation insertRoom($name: String!, $capacity: Int!, $password: String) {
-  insertRoom(name: $name, capacity: $capacity, password: $password) {
+mutation insertRoom($name: String!, $capacity: Int!, $inviteOnly: Boolean) {
+  insertRoom(name: $name, capacity: $capacity, inviteOnly: $inviteOnly) {
     uuid
+    inviteCode
   }
 }`
 
@@ -27,7 +62,7 @@ export default {
     return {
       room: {
         name: '',
-        password: '',
+        inviteOnly: false,
         capacity: 8,
       },
     }
@@ -44,8 +79,19 @@ export default {
           mutation: INSERT_ROOM,
           variables: this.room,
         })
-        const uuid =  resp.data.insertRoom.uuid
-        this.$router.replace({name: 'room', params: {uuid}})
+        const uuid = resp.data.insertRoom.uuid
+        const next = {
+          name: 'room',
+          params: {uuid},
+          query: {},
+        }
+
+        const inviteCode = resp.data.insertRoom.inviteCode
+        if (inviteCode) {
+          next.query['inviteCode'] = inviteCode
+        }
+
+        this.$router.replace(next)
       }
       catch (error) {
         // Error

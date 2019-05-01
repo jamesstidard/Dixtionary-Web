@@ -1,9 +1,19 @@
+<style scoped>
+h1 {
+  padding-top: 32px;
+  padding-bottom: 32px;
+}
+</style>
+
+
 <template>
   <div class="home">
+    <h1>Dixtionary</h1>
+
     <button @click="createRoom">Create Room</button>
 
     <div v-for="room in rooms" :key="room.uuid" @click="join(room)">
-      {{ room.name }} <font-awesome-icon v-if="room.password" :icon="['fal', 'lock-alt']" />
+      {{ room.name }} <font-awesome-icon v-if="room.inviteOnly" :icon="['fal', 'lock-alt']" />
     </div>
   </div>
 </template>
@@ -17,7 +27,7 @@ query selectRoom {
   rooms {
     uuid
     name
-    password
+    inviteOnly
   }
 }`
 
@@ -26,7 +36,7 @@ subscription roomInserted {
   roomInserted {
     uuid
     name
-    password
+    inviteOnly
   }
 }`
 
@@ -35,7 +45,7 @@ subscription roomUpdated {
   roomUpdated {
     uuid
     name
-    password
+    inviteOnly
   }
 }`
 

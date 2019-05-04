@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <span v-if="!connected">
+    <span v-if="!connected && beenASecond">
       Waking up server...
     </span>
     <span v-else>
@@ -23,7 +23,11 @@ export default {
   data() {
     return {
       connected: false,
+      beenASecond: false,
     }
+  },
+  mounted: function() {
+    setTimeout(() => this.beenASecond = true, 1000)
   },
   apollo: {
     $subscribe: {

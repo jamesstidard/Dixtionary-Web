@@ -1,11 +1,43 @@
 <template>
   <div id="app">
-    <div>
-
-    </div>
-    <router-view/>
+    <span v-if="!connected">
+      Waking up server...
+    </span>
+    <span v-else>
+      <router-view/>
+    </span>
   </div>
 </template>
+
+<script>
+import gql from 'graphql-tag'
+
+
+const CONNECT = gql`
+subscription join {
+  connect
+}`
+
+export default {
+  name: 'app',
+  data() {
+    return {
+      connected: false,
+    }
+  },
+  apollo: {
+    $subscribe: {
+      connected: {
+        query: CONNECT,
+        result({data}) {
+          this.connected = data.connect
+        },
+      },
+
+    },
+  }
+}
+</script>
 
 <style>
 #app {

@@ -1,8 +1,4 @@
 <style scoped>
-.scoreboard {
-  padding-left: 8px;
-  padding-right: 8px;
-}
 
 .line {
   text-align: left;

@@ -15,9 +15,6 @@ canvas:hover {
 
 canvas {
   background-color: rgb(255, 255, 255);
-  border-width: 1px;
-  border-color: black;
-  border-style: dashed;
   flex-grow: 1;
 }
 

@@ -1,3 +1,86 @@
+<style scoped>
+.room {
+  display: flex;
+  align-items: stretch;
+  flex-flow: column;
+  height: 100vh;
+}
+
+.header {
+  width: 100%;
+  flex-basis: content;
+}
+
+.waiting {
+  height: 100%;
+  display: flex;
+  flex-flow: row;
+  align-content: center;
+  flex-wrap: wrap;
+}
+
+.waiting .message {
+  width: 100%;
+}
+
+.chooser {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: stretch;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+.chooser button {
+  font-size: 16px;
+  min-width: 100px;
+}
+
+.tabletop {
+  width: 100%;
+  display: flex;
+  flex-grow: 1;
+  align-items: stretch;
+  padding: 4px;
+  box-sizing: border-box;
+}
+
+.tabletop > * {
+  margin: 4px;
+}
+
+.main {
+  flex-grow: 1;
+  border-width: 1px;
+  border-color: black;
+  border-style: dashed;
+}
+
+.aside {
+  flex-grow: 0;
+  display: flex;
+  align-items: stretch;
+  flex-flow: column;
+  max-width: 33vw;
+}
+
+.scoreboard {
+  flex: 1;
+  height: 0;
+}
+
+.chat {
+  flex: 1;
+  height: 0;
+}
+
+</style>
+
+
 <template>
   <div v-if="!$apolloData.queries.room.loading" class="room">
     <div
@@ -523,77 +606,3 @@ export default {
   },
 }
 </script>
-
-<style scoped>
-.room {
-  display: flex;
-  align-items: stretch;
-  flex-flow: column;
-  height: 100vh;
-}
-
-.header {
-  width: 100%;
-  flex-basis: content;
-}
-
-.waiting {
-  height: 100%;
-  display: flex;
-  flex-flow: row;
-  align-content: center;
-  flex-wrap: wrap;
-}
-
-.waiting .message {
-  width: 100%;
-}
-
-.chooser {
-  position: absolute;
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  align-items: stretch;
-  flex-flow: column;
-  justify-content: center;
-  align-items: center;
-  background-color: rgba(255, 255, 255, 0.8);
-}
-
-.chooser button {
-  font-size: 16px;
-  min-width: 100px;
-}
-
-.tabletop {
-  width: 100%;
-  display: flex;
-  flex-grow: 1;
-  align-items: stretch;
-}
-
-.main {
-  flex-grow: 1;
-  padding: 8px;
-}
-
-.aside {
-  flex-grow: 0;
-  display: flex;
-  align-items: stretch;
-  flex-flow: column;
-  max-width: 33vw;
-}
-
-.scoreboard {
-  flex: 1;
-  height: 0;
-}
-
-.chat {
-  flex: 1;
-  height: 0;
-}
-
-</style>

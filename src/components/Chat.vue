@@ -8,9 +8,6 @@
 }
 
 .section {
-  margin-left: 8px;
-  margin-right: 8px;
-
   flex-grow: 1;
 
   display: flex;
@@ -45,10 +42,6 @@
 
   font-size: 16px;
 
-  padding-left: 8px;
-  padding-right: 8px;
-  padding-top: 0px;
-  padding-bottom: 0px;
   border: 0;
 }
 </style>

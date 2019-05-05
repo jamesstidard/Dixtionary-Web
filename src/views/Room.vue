@@ -31,8 +31,15 @@
 
     <div class="tabletop">
       <div class="main">
+        <div
+          class="waiting"
+          v-if="room.members.length === 1">
+          <span class="message">
+            Waiting for other players...
+          </span>
+        </div>
         <Canvas
-          v-if="currentTurn && currentTurn.choice && currentTurn.artist.uuid == me.uuid"
+          v-else-if="currentTurn && currentTurn.choice && currentTurn.artist.uuid == me.uuid"
           v-bind:turn="currentTurn">
         </Canvas>
         <Preview
@@ -40,12 +47,9 @@
           v-bind:artwork="currentTurn.artwork">
         </Preview>
         <div
+          class="celebration"
           v-else-if="game && game.complete">
           Game Over.
-        </div>
-        <div
-          v-else-if="room.members.length === 1">
-          Waiting for other players...
         </div>
       </div>
       <div class="aside">
@@ -531,6 +535,18 @@ export default {
 .header {
   width: 100%;
   flex-basis: content;
+}
+
+.waiting {
+  height: 100%;
+  display: flex;
+  flex-flow: row;
+  align-content: center;
+  flex-wrap: wrap;
+}
+
+.waiting .message {
+  width: 100%;
 }
 
 .chooser {

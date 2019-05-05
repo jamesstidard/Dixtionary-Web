@@ -52,6 +52,12 @@ export default {
   color: #2c3e50;
 }
 
+input {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
 body {
   margin: 0;
 }

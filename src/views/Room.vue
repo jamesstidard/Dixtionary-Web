@@ -65,17 +65,19 @@
   display: flex;
   align-items: stretch;
   flex-flow: column;
-  max-width: 33vw;
+  width: 33vw;
 }
 
 .scoreboard {
   flex: 1;
-  height: 0;
+  /* height: 0; */
+  flex-grow: 0;
 }
 
 .chat {
   flex: 1;
-  height: 0;
+  /* height: 0; */
+  flex-grow: 1;
 }
 
 </style>

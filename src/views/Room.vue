@@ -563,7 +563,7 @@ export default {
   display: flex;
   align-items: stretch;
   flex-flow: column;
-  /* min-width: 350px; */
+  max-width: 33vw;
 }
 
 .scoreboard {

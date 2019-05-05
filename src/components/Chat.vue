@@ -31,6 +31,10 @@
   min-height: 0;
 }
 
+.message {
+  word-wrap: break-word;
+}
+
 .input {
   height: 32px;
 }
@@ -58,7 +62,7 @@
       </div>
 
       <div ref="stream" class="scrollable-content content">
-        <div v-for="msg in messages" :key="msg.uuid">{{ authorName(msg) }}: {{ msg.body }}</div>
+        <div class="message" v-for="msg in messages" :key="msg.uuid">{{ authorName(msg) }}: {{ msg.body }}</div>
       </div>
 
       <div class="input">

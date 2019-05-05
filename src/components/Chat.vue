@@ -1,8 +1,5 @@
 <style scoped>
 .container {
-  padding-left: 8px;
-  padding-right: 8px;
-
   height: 100%;
   width: 100%;
 
@@ -11,6 +8,9 @@
 }
 
 .section {
+  margin-left: 8px;
+  margin-right: 8px;
+
   flex-grow: 1;
 
   display: flex;
@@ -29,6 +29,23 @@
 
   /* for Firefox */
   min-height: 0;
+}
+
+.input {
+  height: 32px;
+}
+
+.input input {
+  /* width: 100%; */
+  height: 100%;
+
+  font-size: 16px;
+
+  padding-left: 8px;
+  padding-right: 8px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  border: 0;
 }
 </style>
 

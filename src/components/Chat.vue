@@ -44,10 +44,7 @@
   font-size: 16px;
 
   outline-width: 0;
-  padding-top: 0;
-  padding-left: 4px;
-  padding-right: 4px;
-  padding-bottom: 0;
+  padding: 0;
   border: 0;
 }
 

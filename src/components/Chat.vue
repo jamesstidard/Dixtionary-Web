@@ -15,6 +15,7 @@
 
   /* for Firefox */
   min-height: 0;
+  height: 0;
 }
 
 .scrollable-content {
@@ -61,9 +62,9 @@
 <template>
   <div class="container">
     <div class="section">
-      <div class="content">
+      <!-- <div class="content">
         <h2>Chat</h2>
-      </div>
+      </div> -->
 
       <div ref="stream" class="scrollable-content content">
         <div class="message" v-for="msg in messages" :key="msg.uuid">{{ authorName(msg) }}: {{ msg.body }}</div>

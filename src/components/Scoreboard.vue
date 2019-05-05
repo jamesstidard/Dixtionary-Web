@@ -27,7 +27,7 @@ div.me {
 
 <template>
   <div class="scoreboard">
-    <h2>Scoreboard</h2>
+    <!-- <h2>Scoreboard</h2> -->
     <div
       v-for="member in unquieMembers"
       :key="member.uuid"

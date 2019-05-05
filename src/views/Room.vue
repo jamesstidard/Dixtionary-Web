@@ -70,13 +70,11 @@
 
 .scoreboard {
   flex: 1;
-  /* height: 0; */
   flex-grow: 0;
 }
 
 .chat {
   flex: 1;
-  /* height: 0; */
   flex-grow: 1;
 }
 

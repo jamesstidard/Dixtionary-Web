@@ -151,6 +151,8 @@ export default {
   },
   methods: {
     async send() {
+      if (this.draft === "") { return }
+
       const backup = this.draft;
       this.draft = "";
       try {

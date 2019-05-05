@@ -43,6 +43,10 @@
           v-else-if="game && game.complete">
           Game Over.
         </div>
+        <div
+          v-else-if="room.members.length === 1">
+          Waiting for other players...
+        </div>
       </div>
       <div class="aside">
         <span class="scoreboard">

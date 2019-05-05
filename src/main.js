@@ -11,6 +11,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 library.add(faLockAlt, faCrown, faUserCrown, faUser)
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)
+Vue.use(require('vue-shortkey'))
 
 Vue.config.productionTip = false
 

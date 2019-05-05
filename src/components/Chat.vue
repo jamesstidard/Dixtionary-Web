@@ -66,7 +66,13 @@
       </div>
 
       <div class="input">
-        <input placeholder="chit-chat here" v-model="draft" @keydown.enter="send">
+        <input
+          v-shortkey.focus="['/']"
+          v-shortkey.avoid
+          placeholder="chit-chat ('/' to focus)"
+          v-model="draft"
+          @keydown.enter="send"
+        >
       </div>
     </div>
   </div>

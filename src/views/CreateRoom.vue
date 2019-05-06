@@ -29,11 +29,11 @@ h1
 
     span
       label Capacity:
-      input(placeholder="capacity", type="number", v-model="room.capacity")
+      input(placeholder="capacity" type="number" v-model="room.capacity")
 
     span
       label Invite Only:
-      input(type="checkbox", v-model="room.inviteOnly")
+      input(type="checkbox" v-model="room.inviteOnly")
 
     span.actions
       button(@click="back") Cancel

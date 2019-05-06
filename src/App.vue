@@ -47,37 +47,53 @@ export default {
 @import "palette.styl"
 
 
+body
+  background-color: background
+  color: red
+
+
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: font-color-disabled;
+  opacity: 1; /* Firefox */
+}
+
+
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
+  color: font-color;
 }
 
 input {
+    color: font-color;
+    caret-color: white;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
     border: 0;
     outline-width: 0;
     font-size: 16px;
+    background-color: transparent
 
     border-bottom 1px
     border-style solid
-    border-color lightgrey
+    border-color text-color
 }
 
 input:focus {
-  border-color: primary;
+  border-color: primary
 }
 
+input:hover
+  border-color: primary-hover
 
 button
   font-size 16px
   background-color transparent
   border 0
-  color grey
+  color font-color
 
   padding 8px
   min-width 100px
@@ -86,16 +102,22 @@ button
 
 
 button:hover
-  background-color off-white
+  color: primary
 
 
 button.primary
   color white
   background-color primary
 
+
 button.primary:hover
   background-color primary-hover
 
+
+button.primary:disabled
+  background-color background-off
+  color font-color-disabled
+  cursor default
 
 body {
   margin: 0;

@@ -29,13 +29,13 @@ h1
 
 .inputs > * > label
   width 33%
-  padding 4px
+  padding 8px
   text-align right
 
 
 .inputs > * > input
   width 66%
-  padding 4px
+  padding 8px
 
 
 .actions
@@ -61,20 +61,29 @@ div.create-room
 
     span.inputs
       span
-        label Room Name:
-        input(placeholder="name" v-model="room.name" v-focus)
+        label Name:
+        input(v-model="room.name" v-focus)
 
       span
         label Capacity:
-        input(placeholder="capacity" type="number" v-model="room.capacity")
+        input(type="number" min=2 max=8 step=1 v-model="room.capacity")
 
       span
         label Invite Only:
         toggle(v-model="room.inviteOnly")
 
     span.actions
-      button(@click="back") Cancel
-      button(@click="createRoom").primary Create
+      button(
+        @click="back"
+        @shortkey="back"
+        v-shortkey.focus.once="['esc']"
+      ) Cancel
+      button.primary(
+        @click="createRoom"
+        @shortkey="createRoom"
+        v-shortkey.focus.once="['enter']"
+        :disabled="!valid"
+      ) Create
 
 </template>
 
@@ -102,6 +111,11 @@ export default {
       },
     }
   },
+  computed: {
+    valid() {
+      return Boolean(this.room.name)
+    }
+  },
   methods: {
     back () {
       window.history.length > 1
@@ -109,6 +123,8 @@ export default {
         : this.$router.push('/')
     },
     async createRoom () {
+      if (!this.valid) {return}
+
       try {
         const resp = await this.$apollo.mutate({
           mutation: INSERT_ROOM,

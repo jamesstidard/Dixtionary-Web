@@ -19,25 +19,25 @@ h1
 
 <template lang="pug">
 
-  div.create-room
+div.create-room
 
-    h1 Create Room
+  h1 Create Room
 
-    span
-      label Room Name:
-      input(placeholder="name" v-model="room.name" v-focus)
+  span
+    label Room Name:
+    input(placeholder="name" v-model="room.name" v-focus)
 
-    span
-      label Capacity:
-      input(placeholder="capacity" type="number" v-model="room.capacity")
+  span
+    label Capacity:
+    input(placeholder="capacity" type="number" v-model="room.capacity")
 
-    span
-      label Invite Only:
-      input(type="checkbox" v-model="room.inviteOnly")
+  span
+    label Invite Only:
+    input(type="checkbox" v-model="room.inviteOnly")
 
-    span.actions
-      button(@click="back") Cancel
-      button(@click="createRoom") Create
+  span.actions
+    button(@click="back") Cancel
+    button(@click="createRoom") Create
 
 </template>
 

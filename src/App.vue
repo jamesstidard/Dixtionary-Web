@@ -56,6 +56,14 @@ input {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
+    border: 0;
+    outline-width: 0;
+}
+
+input:focus {
+  border-bottom: 1px;
+  border-style: solid;
+  border-color: black;
 }
 
 body {

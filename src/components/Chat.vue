@@ -74,6 +74,7 @@
           placeholder="chit-chat ('/' to focus)"
           v-model="draft"
           @keydown.enter="send"
+          v-focus
         >
       </div>
     </div>

@@ -25,7 +25,7 @@ h1 {
 
     <span class="forum">
       <label>Room Name: </label>
-      <input placeholder="name" v-model="room.name">
+      <input placeholder="name" v-model="room.name" v-focus>
     </span>
     <span>
       <label>Capacity: </label>

@@ -1,18 +1,53 @@
 <style lang="stylus" scoped>
 
 .create-room
+  display flex
+  align-items center
+  flex-flow column
+
+.forum
   display: flex
-  align-items: stretch
+  align-items: center
   flex-flow: column
-  height: 100vh
+  max-width 400px
 
 h1
   padding-top: 32px
   padding-bottom: 32px
 
+.inputs
+  display flex
+  flex-flow row
+  flex-wrap wrap
+
+
+.inputs > *
+  width 100%
+  display flex
+  align-items center
+
+
+.inputs > * > label
+  width 33%
+  padding 4px
+  text-align right
+
+
+.inputs > * > input
+  width 66%
+  padding 4px
+
 
 .actions
+  display flex
+  justify-content flex-end
   padding-top: 32px
+  width 100%
+
+.actions > button
+  margin-left 4px
+  margin-right 4px
+
 
 </style>
 
@@ -20,24 +55,26 @@ h1
 <template lang="pug">
 
 div.create-room
+  span.forum
+    span.header
+      h1 Create Room
 
-  h1 Create Room
+    span.inputs
+      span
+        label Room Name:
+        input(placeholder="name" v-model="room.name" v-focus)
 
-  span
-    label Room Name:
-    input(placeholder="name" v-model="room.name" v-focus)
+      span
+        label Capacity:
+        input(placeholder="capacity" type="number" v-model="room.capacity")
 
-  span
-    label Capacity:
-    input(placeholder="capacity" type="number" v-model="room.capacity")
+      span
+        label Invite Only:
+        toggle(v-model="room.inviteOnly")
 
-  span
-    label Invite Only:
-    input(type="checkbox" v-model="room.inviteOnly")
-
-  span.actions
-    button(@click="back") Cancel
-    button(@click="createRoom") Create
+    span.actions
+      button(@click="back") Cancel
+      button(@click="createRoom").primary Create
 
 </template>
 

@@ -10,7 +10,7 @@ h1 {
   <div class="home">
     <h1>Dixtionary</h1>
 
-    <button @click="createRoom">Create Room</button>
+    <button class="primary" @click="createRoom">Create Room</button>
 
     <div v-for="room in rooms" :key="room.uuid" @click="join(room)">
       {{ room.name }} <font-awesome-icon v-if="room.inviteOnly" :icon="['fal', 'lock-alt']" />

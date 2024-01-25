@@ -9,6 +9,8 @@ on:
       - .github/workflows/main.yml
   # Manual dispatch
   workflow_dispatch:
+env:
+  FONT_AWESOME_TOKEN: ${{ secrets.FONT_AWESOME_TOKEN }}
 jobs:
   Build:
     runs-on: [self-hosted, Linux, ARM64]

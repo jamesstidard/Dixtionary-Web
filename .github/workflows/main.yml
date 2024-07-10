@@ -21,8 +21,8 @@ jobs:
           mkdir --parents /etc/docker/certs.d/hub.stidard.dev/
           openssl s_client -showcerts -connect hub.stidard.dev < /dev/null | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > /etc/docker/certs.d/hub.stidard.dev/ca.crt
           docker build \
-            --build-arg VUE_APP_GRAPHQL_HTTP=http://server:8000/graphql \
-            --build-arg VUE_APP_GRAPHQL_WS=ws://server:8000/subscriptions \
+            --build-arg VUE_APP_GRAPHQL_HTTP=https://dixtionary.stidard.com/api/graphql \
+            --build-arg VUE_APP_GRAPHQL_WS=wss://dixtionary.stidard.com/api/subscriptions \
             --build-arg FONT_AWESOME_TOKEN=${FONT_AWESOME_TOKEN} \
             -t hub.stidard.dev/dixtionary-web:latest \
             "."

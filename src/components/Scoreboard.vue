@@ -36,14 +36,14 @@ div.me {
         me: me.uuid === member.uuid
       }">
 
-      <div class="token">
+      <!-- <div class="token">
         <font-awesome-icon
           v-if="member.uuid === room.owner.uuid"
-          :icon="['fal', 'user-crown']" />
+          :icon="['fas', 'crown']" />
         <font-awesome-icon
           v-else
-          :icon="['fal', 'user']" />
-      </div>
+          :icon="['fas', 'user']" />
+      </div> -->
 
       <div class="name">
         {{ member.name }}

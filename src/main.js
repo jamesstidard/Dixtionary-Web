@@ -6,13 +6,13 @@ import store from './store'
 import focus from './directives/focus'
 import toggle from './components/Toggle'
 
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { faLockAlt, faCrown, faUserCrown, faUser } from '@fortawesome/pro-light-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+// import { library } from '@fortawesome/fontawesome-svg-core'
+// import { faLockAlt, faCrown, faUserCrown, faUser } from '@fortawesome/pro-light-svg-icons'
+// import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-library.add(faLockAlt, faCrown, faUserCrown, faUser)
+// library.add(faLockAlt, faCrown, faUserCrown, faUser)
 
-Vue.component('font-awesome-icon', FontAwesomeIcon)
+// Vue.component('font-awesome-icon', FontAwesomeIcon)
 Vue.use(require('vue-shortkey'))
 
 Vue.component('toggle', toggle)

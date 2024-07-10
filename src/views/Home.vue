@@ -13,7 +13,7 @@ h1 {
     <button class="primary" @click="createRoom">Create Room</button>
 
     <div v-for="room in rooms" :key="room.uuid" @click="join(room)">
-      {{ room.name }} <font-awesome-icon v-if="room.inviteOnly" :icon="['fal', 'lock-alt']" />
+       {{ room.name }} <!-- <font-awesome-icon v-if="room.inviteOnly" :icon="['fas', 'lock']" /> -->
     </div>
   </div>
 </template>
